@@ -5,14 +5,16 @@ from werkzeug import secure_filename
 from uuid import uuid4
 
 
-app = Flask(__name__, static_url_path='/assets')
+app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
 
-UPLOAD_FOLDER = '/assets/userUploadImages'
+UPLOAD_FOLDER = '/static/userUploadImages'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
+
+path = Path(__file__).parent
 
 
 def deleteSpecificFilesInDir():
@@ -49,7 +51,7 @@ def upload_file():
     else:
         if session['counter'] >= 1:
             deleteSpecificFilesInDir()
-        return render_template('main_page.html')
+        return render_template(path + '/view/main_page.html')
 
 
 ##Error-Messages:
