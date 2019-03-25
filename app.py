@@ -5,7 +5,6 @@ from werkzeug import secure_filename
 from uuid import uuid4
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
-#UPLOAD_FOLDER = '/static/userUploadImages'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 
 app = Flask(__name__, static_url_path='/static')
