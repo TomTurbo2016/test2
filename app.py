@@ -48,7 +48,7 @@ def upload_file():
     else:
         if session['counter'] >= 1:
             deleteSpecificFilesInDir()
-        return app.send_static_file('/view/main_page.html')
+        return app.send_static_file('main_page.html')
 
 
 ##Error-Messages:
