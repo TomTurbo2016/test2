@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <title>gexvo - Upload a Picture</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+        <style>
+        </style>
+    </head>
+
+    <body style="background-color:white;">
+        <div class="container-fluid">
+            <div class="col-sm-9">
+                <h4>
+                    <small>
+                        Welcome to Neural Style Transfer by gexvo
+                    </small>
+                </h4>
+                <h4>
+                <hr>
+                    <p style="margin-left:25px;">
+                        Upload  an image and apply
+                    </p>
+                    <p style="margin-left:25px;">
+                        a pre-trained style model.
+                    </p>
+                    <form method=post enctype=multipart/form-data runat="server">
+                        <div>
+                            <p style="color:white">.</p>
+                            <p>
+                                <label id="lab">
+                                    <b style="border-style:solid; margin-left:12px; color:black; font-size:200%; background-color:#f6fc9c; font-weight:bold; cursor: pointer;">
+                                        Click to upload
+                                    </b>
+                                    <input type="file"
+                                           name="file"
+                                           onchange="this.form.submit(); this.form.onsubmit=hideFunction();"
+                                           style="visibility: hidden;"/>
+                                </label>
+                            </p>
+                        </div>
+                    </form>
+                <hr>
+            </div>
+        </div>
+
+        <script>
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function (event) {
+            history.pushState(null, document.title, location.href);
+            });
+            function hideFunction() {
+            document.getElementById('lab').style.visibility = 'hidden';
+            document.getElementById('upLo').style.display = 'block';
+            }
+        </script>
+
+    </body>
+
+</html>
+
