@@ -12,7 +12,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
-path = os.path.dirname(app.instance_path)
 
 def deleteSpecificFilesInDir():
     filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
@@ -50,6 +49,20 @@ def upload_file():
             deleteSpecificFilesInDir()
         return render_template('main_page.html')
 
+    
+@app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
+def NEW_uploaded_file():
+    if request.method == 'POST':
+        fileName = str(session['img_filename'])
+        pathInputPic = UPLOAD_FOLDER + '/' + fileName
+        pathOutputPic = UPLOAD_FOLDER + '/out_' + fileName
+        pathOutputPicBig = UPLOAD_FOLDER + '/out_big_' + fileName
+        fileNameOut = 'out_' + fileName
+        fileNameOutBig = 'out_big_' + fileName
+    else:
+        filename = request.args.get('filename')
+        return render_template('showPic.html', img_filename=filename)
+    
 
 ##Error-Messages:
 @app.route('/FILE_UPLOAD_ERROR_NoFileSelected')
