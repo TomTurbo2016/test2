@@ -8,6 +8,8 @@ from torchvision import transforms
 import asyncio
 
 
+MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+
 class TransformerNet(torch.nn.Module):
     def __init__(self):
         super(TransformerNet, self).__init__()
@@ -145,7 +147,6 @@ def stylize(args):
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle):
-    MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
     main_arg_parser = argparse.ArgumentParser(description="e34lu")
     main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
     main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
