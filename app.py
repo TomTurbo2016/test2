@@ -9,7 +9,6 @@ import requests
 import stylize
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
-MODELS_FOLDE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 
 app = Flask(__name__, static_url_path='/static')
@@ -20,6 +19,7 @@ app.secret_key = os.urandom(13)
 
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
+    MODELS_FOLDE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
     destination = MODELS_FOLDER + '/mosaic.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
