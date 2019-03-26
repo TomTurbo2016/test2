@@ -7,7 +7,6 @@ from PIL import Image
 from torchvision import transforms
 import asyncio
 
-MODELS_FOLDE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 
 class TransformerNet(torch.nn.Module):
     def __init__(self):
@@ -146,11 +145,12 @@ def stylize(args):
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle):
+    MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
     main_arg_parser = argparse.ArgumentParser(description="e34lu")
     main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
     main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
     main_arg_parser.add_argument("--output-image", type=str, default = pathOutputPic)
-    main_arg_parser.add_argument("--model", type=str, default = MODELS_FOLDE + '/' + nameStyle + ".pth")
+    main_arg_parser.add_argument("--model", type=str, default = MODELS_FOLDER + '/' + nameStyle + ".pth")
     args = main_arg_parser.parse_args()
     stylize(args)
 
