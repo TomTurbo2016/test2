@@ -8,8 +8,8 @@ from uuid import uuid4
 import requests
 import stylize
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -65,6 +65,7 @@ def upload_file():
 @app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
 def NEW_uploaded_file():
     if request.method == 'POST':
+        UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
         fileName = str(session['img_filename'])
         pathInputPic = UPLOAD_FOLDER + '/' + fileName
         pathOutputPic = UPLOAD_FOLDER + '/out_' + fileName
