@@ -5,8 +5,11 @@ import fnmatch
 from flask import Flask, request, redirect, url_for, render_template, session
 from werkzeug import secure_filename
 from uuid import uuid4
+import requests
+import stylize
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
+MODELS_FOLDE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 
 app = Flask(__name__, static_url_path='/static')
@@ -14,6 +17,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
+
+def downloadFileMosaic():
+    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
+    destination = MODELS_FOLDER + '/mosaic.pth'
+    r = requests.get(url)
+    with open(destination, 'wb') as f:
+        f.write(r.content)
 
 def deleteSpecificFilesInDir():
     filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
@@ -61,6 +71,13 @@ def NEW_uploaded_file():
         pathOutputPicBig = UPLOAD_FOLDER + '/out_big_' + fileName
         fileNameOut = 'out_' + fileName
         fileNameOutBig = 'out_big_' + fileName
+        ##-----------------------------------------STYLES------------------------------------>
+        selectedStyle = request.form['stylize']
+        if selectedStyle == 'mosaic':
+            downloadFileMosaic()
+            stylize.main(pathInputPic, pathOutputPic, 'mosaic')
+            return render_template('showPic_style.html', img_filename=fileNameOut)
+        ##-----------------------------------------STYLES------------------------------------>
     else:
         filename = request.args.get('filename')
         return render_template('showPic.html', img_filename=filename)
