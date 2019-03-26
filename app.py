@@ -10,6 +10,7 @@ import stylize
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
+MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -18,8 +19,7 @@ app.secret_key = os.urandom(13)
 
 
 def downloadFileMosaic():
-    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
-    MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
     destination = MODELS_FOLDER + '/mosaic.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
@@ -65,7 +65,6 @@ def upload_file():
 @app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
 def NEW_uploaded_file():
     if request.method == 'POST':
-        UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
         fileName = str(session['img_filename'])
         pathInputPic = UPLOAD_FOLDER + '/' + fileName
         pathOutputPic = UPLOAD_FOLDER + '/out_' + fileName
