@@ -8,7 +8,7 @@ from torchvision import transforms
 import asyncio
 
 
-MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+#MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 
 class TransformerNet(torch.nn.Module):
     def __init__(self):
@@ -136,7 +136,9 @@ def stylize(args):
     else:
         with torch.no_grad():
             style_model = TransformerNet()
-            state_dict = torch.load(args.model)
+            #state_dict = torch.load(args.model)
+            myModel = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+            state_dict = torch.load(myModel + '/mosaic.pth')
             for k in list(state_dict.keys()):
                 if re.search(r'in\d+\.running_(mean|var)$', k):
                     del state_dict[k]
@@ -151,7 +153,8 @@ async def doWork(pathInputPic, pathOutputPic, nameStyle):
     main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
     main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
     main_arg_parser.add_argument("--output-image", type=str, default = pathOutputPic)
-    main_arg_parser.add_argument("--model", type=str, default = MODELS_FOLDER + '/' + nameStyle + ".pth")
+    #main_arg_parser.add_argument("--model", type=str, default = MODELS_FOLDER + '/' + nameStyle + ".pth")
+    main_arg_parser.add_argument("--model", type=str, default = "")
     args = main_arg_parser.parse_args()
     stylize(args)
 
