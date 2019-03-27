@@ -88,7 +88,7 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-	    try:		
+	    try:
             	stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
             	return render_template('showPic_style.html', img_filename=fileNameOut)
 	    except Exception as e:
