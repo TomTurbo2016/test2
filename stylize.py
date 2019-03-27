@@ -121,7 +121,7 @@ def check_paths(args):
 
 def stylize(_pathInputPic, _scaleFactor, _pathOutputPic, _model):
     device = torch.device("cpu")
-    content_image = load_image(_pathInputPic, scale=_scaleFactor)
+    content_image = load_image(_pathInputPic, scale=0.5)
     content_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Lambda(lambda x: x.mul(255))
