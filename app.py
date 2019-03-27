@@ -5,6 +5,9 @@ from werkzeug import secure_filename
 from uuid import uuid4
 import requests
 import stylize
+import upscale
+import imageResize
+
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
@@ -51,6 +54,8 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            maxWidthHeight = 500
+            imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
             return redirect(url_for('NEW_uploaded_file', filename=filename))
         else:
             return redirect(url_for('file_upload_error_nojpg'))
