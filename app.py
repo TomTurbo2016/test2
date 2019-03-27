@@ -57,7 +57,7 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 500 #900 & 500 works!!!
+            maxWidthHeight = 450 #900 & 500 works!!!
             imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
             return redirect(url_for('NEW_uploaded_file', filename=filename))            
         else:
