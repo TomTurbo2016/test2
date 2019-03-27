@@ -54,9 +54,12 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 500
-            imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
-            return redirect(url_for('NEW_uploaded_file', filename=filename))
+            try:
+                maxWidthHeight = 500
+                imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
+                return redirect(url_for('NEW_uploaded_file', filename=filename))
+            except:
+                return redirect(url_for('generalError'))
         else:
             return redirect(url_for('file_upload_error_nojpg'))
     else:
