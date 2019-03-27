@@ -86,13 +86,10 @@ def NEW_uploaded_file():
             try:
                 check = True
                 stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
-                raise Exception("Can't connect to database")
-            except:
-                check = False
-            if check == True:
                 return render_template('showPic_style.html', img_filename=fileNameOut)
-            else:
-                return render_template('file_too_big_error')
+            except:
+                raise Exception("Can't connect to database")
+                #return render_template('file_too_big_error')
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
