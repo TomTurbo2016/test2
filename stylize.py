@@ -119,9 +119,9 @@ def check_paths(args):
         sys.exit(1)
 
 
-def stylize(_pathInputPic, _scale, _pathOutputPic, _model):
+def stylize(_pathInputPic, _scaleFactor, _pathOutputPic, _model):
     device = torch.device("cpu")
-    content_image = load_image(_pathInputPic, scale=_scale)
+    content_image = load_image(_pathInputPic, scale=_scaleFactor)
     content_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Lambda(lambda x: x.mul(255))
@@ -143,15 +143,15 @@ def stylize(_pathInputPic, _scale, _pathOutputPic, _model):
     save_image(_pathOutputPic, output[0])
 
 
-async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel):
-    stylize(pathInputPic, 0.5, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
+async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel, scaleFactor):
+    stylize(pathInputPic, scaleFactor, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
 
 
-def main(pathInputPic, pathOutputPic, nameStyle, pathModel):
+def main(pathInputPic, pathOutputPic, nameStyle, pathModel, scaleFactor):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(doWork(pathInputPic, pathOutputPic, nameStyle, pathModel))
+    loop.run_until_complete(doWork(pathInputPic, pathOutputPic, nameStyle, pathModel, scaleFactor))
     loop.close()
 
 
