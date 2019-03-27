@@ -43,10 +43,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.errorhandler(500)
-def internal_server_error(error):
-    #app.logger.error('Server Error: %s', (error))
-    return render_template('500.htm'), 500
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -79,6 +76,16 @@ def upload_file():
         if session['counter'] >= 1:
             deleteSpecificFilesInDir()
         return render_template('main_page.html')
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    app.logger.error('Server Error: %s', (error))
+    return render_template('500.htm'), 500
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    app.logger.error('Unhandled Exception: %s', (e))
+    return render_template('500.htm'), 500
 
     
 @app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
