@@ -6,6 +6,7 @@ import torch
 from PIL import Image
 from torchvision import transforms
 import asyncio
+import cv2
 
 
 
@@ -93,11 +94,14 @@ class UpsampleConvLayer(torch.nn.Module):
 
 
 def load_image(filename, size=None, scale=None):
-    img = Image.open(filename)
+    #img = Image.open(filename)
+    img = cv2.imread(filename)
     if size is not None:
-        img = img.resize((size, size), Image.ANTIALIAS)
+        #img = img.resize((size, size), Image.ANTIALIAS)
+        img = cv2.resize(img, (size, size), interpolation=cv2.INTER_AREA)
     elif scale is not None:
-        img = img.resize((int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS)
+        #img = img.resize((int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS)
+        img = cv2.resize(img, (int(img.size[0] / scale), int(img.size[1] / scale), interpolation=cv2.INTER_AREA)
     return img
 
 
