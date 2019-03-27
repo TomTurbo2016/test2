@@ -82,11 +82,11 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-	    try:	
-		    stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
-		    return render_template('showPic_style.html', img_filename=fileNameOut)	    	
-	    except Exception as e:
-		    render_template('file_too_big_error')	    	
+	    try:
+		stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+		return render_template('showPic_style.html', img_filename=fileNameOut)	    	
+	    except:
+		render_template('file_too_big_error')	    	
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
