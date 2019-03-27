@@ -1,7 +1,7 @@
 import os
 import fnmatch
 from flask import Flask, request, redirect, url_for, render_template, session
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException as weEx
 from werkzeug import secure_filename
 from uuid import uuid4
 import requests
@@ -19,7 +19,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
-class FileToBigException(werkzeug.exceptions.HTTPException):
+class FileToBigException(weEx.HTTPException):
     code = 502
     description = 'File too big'
 
