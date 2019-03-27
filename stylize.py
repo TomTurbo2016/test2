@@ -96,7 +96,7 @@ class UpsampleConvLayer(torch.nn.Module):
 def load_image(filename, size=None, scale=None):
     img = Image.open(filename)
     #img = cv2.imread(filename)
-    height, width, depth = img.shape
+    #height, width, depth = img.shape
     if size is not None:
         img = img.resize((size, size), Image.ANTIALIAS)
         #img = cv2.resize(img, (size, size), interpolation=cv2.INTER_AREA)
