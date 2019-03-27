@@ -1,5 +1,5 @@
 numpy
-install torch torchvision
+torch torchvision
 uuid
 asyncio
 requests
