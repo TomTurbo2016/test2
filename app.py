@@ -19,7 +19,19 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
 
+def deleteSpecificFilesInDir():
+    filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
+    for f in filelist:
+        if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
+            os.remove(os.path.join(UPLOAD_FOLDER, f))
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+
+##-------------------------------DOWNLOAD-STYLES------------------------------------------------>
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
     destination = MODELS_FOLDER + '/mosaic.pth'
@@ -61,21 +73,24 @@ def downloadFileTiger():
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
-
         
+##-------------------------------DOWNLOAD-SCALE------------------------------------------------>
         
+def downloadFile2xSize():
+    url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'    
+    destination = MODELS_FOLDER + '/mosaic.pth'
+    r = requests.get(url)
+    with open(destination, 'wb') as f:
+        f.write(r.content)
         
-def deleteSpecificFilesInDir():
-    filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
-    for f in filelist:
-        if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
-            os.remove(os.path.join(UPLOAD_FOLDER, f))
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
+def downloadFile3xSize():
+    url = 'https://drive.google.com/uc?export=download&id=1cnzlliVlL4wsuP-mrf8HfllC8qGLZbaS'    
+    destination = MODELS_FOLDER + '/mosaic.pth'
+    r = requests.get(url)
+    with open(destination, 'wb') as f:
+        f.write(r.content)
+        
+##--------------------------------------------------------------------------------------------->      
 
 
 
