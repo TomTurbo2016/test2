@@ -82,11 +82,11 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-	    try:
-		stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
-		return render_template('showPic_style.html', img_filename=fileNameOut)	    	
+	    try:	
+		    stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+		    return render_template('showPic_style.html', img_filename=fileNameOut)	    	
 	    except Exception as e:
-			render_template('generalError')	    	
+		    render_template('file_too_big_error')	    	
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
@@ -118,6 +118,20 @@ def file_upload_error_nojpg():
     <!doctype html>
     <title>Upload File ERROR - No jpg Format</title>
     <h1>File needs to end with .jpg</h1>
+    <button onclick="goBack()">Go Back</button>
+    <script>
+    function goBack() {
+    window.location.href='https://gexvo.onrender.com';
+    }
+    </script>
+    '''
+
+@app.route('/GENERALERROR')
+def file_too_big_error():
+    return '''
+    <!doctype html>
+    <title>File too big ERROR</title>
+    <h1>Something went wrong!</h1>
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
