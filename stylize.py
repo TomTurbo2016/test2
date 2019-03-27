@@ -144,7 +144,7 @@ def stylize(_pathInputPic, _scale, _pathOutputPic, _model):
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel):
-    stylize(pathInputPic, 2, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
+    stylize(pathInputPic, 0.5, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
 
 
 def main(pathInputPic, pathOutputPic, nameStyle, pathModel):
