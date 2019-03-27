@@ -75,7 +75,7 @@ def NEW_uploaded_file():
         selectedStyle = request.form['stylize']
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
-            #stylize.main(pathInputPic, pathOutputPic, 'mosaic')
+            stylize.main(pathInputPic, pathOutputPic, 'mosaic', MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         ##-----------------------------------------STYLES------------------------------------>
     else:
