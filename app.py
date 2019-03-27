@@ -43,6 +43,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.errorhandler(500)
+def internal_server_error(error):
+    app.logger.error('Server Error: %s', (error))
+    return render_template('500.htm'), 500
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if session.get('counter') == True:
@@ -65,12 +70,9 @@ def upload_file():
             try:
                 maxWidthHeight = 900 #500 works!!!
                 imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
-            except:
-                checkError = True
-            if checkError == False:
                 return redirect(url_for('NEW_uploaded_file', filename=filename))
-            else:
-                return redirect(url_for('generalError'))
+            except Exception as e:
+	            render_template("500.html", error = str(e))              
         else:
             return redirect(url_for('file_upload_error_nojpg'))
     else:
