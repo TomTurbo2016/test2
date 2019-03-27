@@ -125,7 +125,7 @@ def check_paths(args):
 
 
 def stylize(_pathInputPic, _pathOutputPic, _model):
-    device = torch.device("cpu")
+    device = torch.device("cuda")
     content_image = load_image(_pathInputPic, scale=1)
     content_transform = transforms.Compose([
         transforms.ToTensor(),
