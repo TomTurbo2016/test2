@@ -1,5 +1,6 @@
 numpy
-torch torchvision
+torch
+torchvision
 uuid
 asyncio
 requests
