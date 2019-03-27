@@ -18,6 +18,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
+class FileToBigException(werkzeug.exceptions.HTTPException):
+    code = 502
+    description = 'File too big'
+
+app.register_error_handler(FileToBigException, handle_502)
+
+raise InsufficientStorage()
 
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
