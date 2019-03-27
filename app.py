@@ -1,5 +1,3 @@
-#https://www.techcoil.com/blog/serve-static-files-python-3-flask/
-
 import os
 import fnmatch
 from flask import Flask, request, redirect, url_for, render_template, session
