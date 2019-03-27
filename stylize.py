@@ -121,7 +121,7 @@ def check_paths(args):
 
 def stylize(_pathInputPic, _scaleFactor, _pathOutputPic, _model):
     device = torch.device("cpu")
-    content_image = load_image(_pathInputPic, scale=1)
+    content_image = load_image(_pathInputPic, scale=_scaleFactor)
     content_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Lambda(lambda x: x.mul(255))
@@ -144,7 +144,7 @@ def stylize(_pathInputPic, _scaleFactor, _pathOutputPic, _model):
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel, scaleFactor):
-    stylize(pathInputPic, scaleFactor, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
+    stylize(pathInputPic, 1, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
 
 
 def main(pathInputPic, pathOutputPic, nameStyle, pathModel, scaleFactor):
