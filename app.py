@@ -57,7 +57,7 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 1900 #900 & 500 works!!!
+            maxWidthHeight = 500 #900 & 500 works!!!
             imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
             return redirect(url_for('NEW_uploaded_file', filename=filename))            
         else:
@@ -82,14 +82,8 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-            check = False
-            try:
-                check = True
-                stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
-                return render_template('showPic_style.html', img_filename=fileNameOut)
-            except:
-                raise Exception("Can't connect to database")
-                #return render_template('file_too_big_error')
+            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            return render_template('showPic_style.html', img_filename=fileNameOut)
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
