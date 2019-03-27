@@ -6,7 +6,7 @@ import torch
 from PIL import Image
 from torchvision import transforms
 import asyncio
-import cv2
+#import cv2
 
 
 
