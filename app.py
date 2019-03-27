@@ -1,7 +1,7 @@
 import os
 import fnmatch
 from flask import Flask, request, redirect, url_for, render_template, session
-from werkzeug.exceptions import HTTPException as weEx
+from werkzeug.exceptions import HTTPException
 from werkzeug import secure_filename
 from uuid import uuid4
 import requests
@@ -19,13 +19,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
-class FileToBigException(weEx):
+class FileToBigException(HTTPException):
     code = 502
-    description = 'File too big'
+    description = '<p>File too big.</p>'
 
-app.register_error_handler(FileToBigException, handle_502)
-
-raise InsufficientStorage()
+#app.register_error_handler(FileToBigException, handle_502)
+#raise FileToBigException()
 
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
@@ -62,9 +61,12 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 900 #500 works!!!
-            imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
-            return redirect(url_for('NEW_uploaded_file', filename=filename))
+            try:
+                maxWidthHeight = 900 #500 works!!!
+                imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
+                return redirect(url_for('NEW_uploaded_file', filename=filename))
+            except HTTPException, e:
+                return e
         else:
             return redirect(url_for('file_upload_error_nojpg'))
     else:
