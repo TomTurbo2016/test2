@@ -55,7 +55,7 @@ def upload_file():
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             try:
-                maxWidthHeight = 500
+                maxWidthHeight = 900 #500 works!!!
                 imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
                 return redirect(url_for('NEW_uploaded_file', filename=filename))
             except:
@@ -84,7 +84,11 @@ def NEW_uploaded_file():
             styleName = 'mosaic'
             stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
-        ##-----------------------------------------STYLES------------------------------------>
+        ##-----------------------------------------UPSCALE----------------------------------->
+        elif selectedStyle == 'enlarge':
+            upscale.main(pathOutputPic, pathOutputPicBig)
+            return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
+        ##----------------------------------------------------------------------------------->
     else:
         filename = request.args.get('filename')
         return render_template('showPic.html', img_filename=filename)
