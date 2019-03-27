@@ -1,6 +1,7 @@
 import os
 import fnmatch
 from flask import Flask, request, redirect, url_for, render_template, session
+from werkzeug.exceptions import HTTPException
 from werkzeug import secure_filename
 from uuid import uuid4
 import requests
