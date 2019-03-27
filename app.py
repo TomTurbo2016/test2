@@ -74,7 +74,7 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-            scaleFactor = 0.5 #=doubleSize; 1=sameSize
+            scaleFactor = 1 #0.5=doubleSize; 1=sameSize
             stylize.main(pathInputPic, pathOutputPic, 'mosaic', MODELS_FOLDER, scaleFactor)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         ##-----------------------------------------STYLES------------------------------------>
