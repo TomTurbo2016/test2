@@ -19,7 +19,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
-class FileToBigException(weEx.HTTPException):
+class FileToBigException(weEx):
     code = 502
     description = 'File too big'
 
