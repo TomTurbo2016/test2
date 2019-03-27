@@ -102,7 +102,7 @@ def load_image(filename, size=None, scale=None):
         img = cv2.resize(img, (size, size), interpolation=cv2.INTER_AREA)
     elif scale is not None:
         #img = img.resize((int(img.size[0] / scale), int(img.size[1] / scale)), Image.ANTIALIAS)
-        img = cv2.resize(img, (int(height / scale), int(width / scale), interpolation=cv2.INTER_AREA))
+        img = cv2.resize(img, (int(height / scale), int(width / scale)), interpolation=cv2.INTER_AREA)
     return img
 
 
