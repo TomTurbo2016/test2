@@ -146,14 +146,7 @@ def stylize(_pathInputPic, _scale, _pathOutputPic, _model):
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel):
-    #main_arg_parser = argparse.ArgumentParser(description="e34lu")
-    #main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
-    #main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
-    #main_arg_parser.add_argument("--output-image", type=str, default = pathOutputPic)
-    #main_arg_parser.add_argument("--model", type=str, default = pathModel + '/' + nameStyle + '.pth')
-    #args = main_arg_parser.parse_args()
-    #stylize(args)
-    stylize(pathInputPic, 1, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
+    stylize(pathInputPic, 2, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
 
 
 def main(pathInputPic, pathOutputPic, nameStyle, pathModel):
