@@ -63,29 +63,15 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            checkError = False
-            try:
-                maxWidthHeight = 1900 #900 & 500 works!!!
-                imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
-                return redirect(url_for('NEW_uploaded_file', filename=filename))
-            except Exception as e:
-	            render_template("500.html", error = str(e))              
+            maxWidthHeight = 1900 #900 & 500 works!!!
+            imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
+            return redirect(url_for('NEW_uploaded_file', filename=filename))            
         else:
             return redirect(url_for('file_upload_error_nojpg'))
     else:
         if session['counter'] >= 1:
             deleteSpecificFilesInDir()
         return render_template('main_page.html')
-
-@app.errorhandler(500)
-def internal_server_error(error):
-    app.logger.error('Server Error: %s', (error))
-    return render_template('500.htm'), 500
-
-@app.errorhandler(Exception)
-def unhandled_exception(e):
-    app.logger.error('Unhandled Exception: %s', (e))
-    return render_template('500.htm'), 500
 
     
 @app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
@@ -102,8 +88,11 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
-            return render_template('showPic_style.html', img_filename=fileNameOut)
+	    try:		
+            	stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            	return render_template('showPic_style.html', img_filename=fileNameOut)
+	    except Exception as e:
+			render_template('generalError') 
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
