@@ -8,7 +8,6 @@ from torchvision import transforms
 import asyncio
 
 
-#MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
 
 class TransformerNet(torch.nn.Module):
     def __init__(self):
@@ -120,10 +119,10 @@ def check_paths(args):
         sys.exit(1)
 
 
-def stylize(args):
+def stylize(_pathInputPic, _scale, _pathOutputPic, _model):
     device = torch.device("cpu")
 
-    content_image = load_image(args.content_image, scale=args.content_scale)
+    content_image = load_image(_pathInputPic, scale=_scale)
     content_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Lambda(lambda x: x.mul(255))
@@ -136,27 +135,25 @@ def stylize(args):
     else:
         with torch.no_grad():
             style_model = TransformerNet()
-            state_dict = torch.load(args.model)
-            #myModel = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
-            state_dict = torch.load(myModel + '/mosaic.pth')
+            state_dict = torch.load(_model)
             for k in list(state_dict.keys()):
                 if re.search(r'in\d+\.running_(mean|var)$', k):
                     del state_dict[k]
             style_model.load_state_dict(state_dict)
             style_model.to(device)
             output = style_model(content_image).cpu()
-    save_image(args.output_image, output[0])
+    save_image(_pathOutputPic, output[0])
 
 
 async def doWork(pathInputPic, pathOutputPic, nameStyle, pathModel):
-    main_arg_parser = argparse.ArgumentParser(description="e34lu")
-    main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
-    main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
-    main_arg_parser.add_argument("--output-image", type=str, default = pathOutputPic)
-    #main_arg_parser.add_argument("--model", type=str, default = MODELS_FOLDER + '/' + nameStyle + ".pth")
-    main_arg_parser.add_argument("--model", type=str, default = pathModel + '/' + nameStyle + '.pth')
-    args = main_arg_parser.parse_args()
-    stylize(args)
+    #main_arg_parser = argparse.ArgumentParser(description="e34lu")
+    #main_arg_parser.add_argument("--content-image", type=str, default = pathInputPic)
+    #main_arg_parser.add_argument("--content-scale", type=float, default = 1) # 1 --> original output size; 0.5 --> double output size
+    #main_arg_parser.add_argument("--output-image", type=str, default = pathOutputPic)
+    #main_arg_parser.add_argument("--model", type=str, default = pathModel + '/' + nameStyle + '.pth')
+    #args = main_arg_parser.parse_args()
+    #stylize(args)
+    stylize(pathInputPic, 1, pathOutputPic, pathModel + '/' + nameStyle + '.pth')
 
 
 def main(pathInputPic, pathOutputPic, nameStyle, pathModel):
