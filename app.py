@@ -60,13 +60,6 @@ def downloadFileRainprincess():
     with open(destination, 'wb') as f:
         f.write(r.content)
         
-def downloadFileMosaic():
-    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
 def downloadFileTiger():
     url = 'https://drive.google.com/uc?export=download&id=1Bm9WqLLVliWK49lYW9C1CjqPehrMLanI'    
     destination = MODELS_FOLDER + '/mosaic.pth'
@@ -74,8 +67,7 @@ def downloadFileTiger():
     with open(destination, 'wb') as f:
         f.write(r.content)
         
-##-------------------------------DOWNLOAD-SCALE------------------------------------------------>
-        
+##-------------------------------DOWNLOAD-SCALE------------------------------------------------>      
 def downloadFile2xSize():
     url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'    
     destination = MODELS_FOLDER + '/mosaic.pth'
@@ -134,11 +126,37 @@ def NEW_uploaded_file():
         fileNameOutBig = 'out_big_' + fileName
         ##-----------------------------------------STYLES------------------------------------>
         selectedStyle = request.form['stylize']
+        
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
             stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
+        
+        elif selectedStyle == 'rainPrincess':
+            downloadFileRainprincess()
+            styleName = 'rainPrincess'
+            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            return render_template('showPic_style.html', img_filename=fileNameOut)
+        
+        elif selectedStyle == 'churchWindow':
+            downloadFileChurchwindow()
+            styleName = 'churchWindow'
+            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            return render_template('showPic_style.html', img_filename=fileNameOut)
+        
+        elif selectedStyle == 'tiger':
+            downloadFileTiger()
+            styleName = 'tiger'
+            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            return render_template('showPic_style.html', img_filename=fileNameOut)
+        
+        elif selectedStyle == 'fireworks':
+            downloadFileFireworks()
+            styleName = 'fireworks'
+            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            return render_template('showPic_style.html', img_filename=fileNameOut)
+        
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
             upscale.main(pathOutputPic, pathOutputPicBig)
