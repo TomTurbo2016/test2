@@ -28,10 +28,10 @@ def deleteSpecificFilesInDir():
             os.remove(os.path.join(UPLOAD_FOLDER, f))
             
 def deleteSpecificFilesInDir2():
-    filelist = [ f for f in os.listdir(STYLE_MODELS_FOLDER) if f.endswith(".pth")]
+    filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
     for f in filelist:
-        if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
-            os.remove(os.path.join(STYLE_MODELS_FOLDER, f))
+        if fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
+            os.remove(os.path.join(UPLOAD_FOLDER, f))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -126,6 +126,7 @@ def upload_file():
 @app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
 def NEW_uploaded_file():
     if request.method == 'POST':
+        deleteSpecificFilesInDir2()
         fileName = str(session['img_filename'])
         pathInputPic = UPLOAD_FOLDER + '/' + fileName
         pathOutputPic = UPLOAD_FOLDER + '/out_' + fileName
@@ -134,7 +135,6 @@ def NEW_uploaded_file():
         fileNameOutBig = 'out_big_' + fileName
         ##-----------------------------------------STYLES------------------------------------>
         selectedStyle = request.form['stylize']
-        deleteSpecificFilesInDir2()
         
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
@@ -163,7 +163,7 @@ def NEW_uploaded_file():
         elif selectedStyle == 'fireworks':
             downloadFileFireworks()
             styleName = 'fireworks'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + 'fireworks')
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/fireworks')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         ##-----------------------------------------UPSCALE----------------------------------->
