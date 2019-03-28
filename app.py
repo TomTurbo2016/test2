@@ -7,6 +7,7 @@ import requests
 import stylize
 import upscale
 import imageResize
+import imageResize2
 
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
