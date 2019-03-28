@@ -162,7 +162,8 @@ def NEW_uploaded_file():
         elif selectedStyle == 'enlarge':
             downloadFile2xSize()
             #downloadFile3xSize
-            upscale.main(pathOutputPic, pathOutputPicBig)
+            upscaleName = '2xSize'
+            upscale.main(pathOutputPic, pathOutputPicBig, upscaleName, UPSCALE_MODEL_FOLDER)
             return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
         ##----------------------------------------------------------------------------------->
     else:
