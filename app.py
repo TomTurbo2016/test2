@@ -26,6 +26,12 @@ def deleteSpecificFilesInDir():
     for f in filelist:
         if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
             os.remove(os.path.join(UPLOAD_FOLDER, f))
+            
+def deleteSpecificFilesInDir2():
+    filelist = [ f for f in os.listdir(STYLE_MODELS_FOLDER) if f.endswith(".pth")]
+    for f in filelist:
+        if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
+            os.remove(os.path.join(STYLE_MODELS_FOLDER, f))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -128,6 +134,7 @@ def NEW_uploaded_file():
         fileNameOutBig = 'out_big_' + fileName
         ##-----------------------------------------STYLES------------------------------------>
         selectedStyle = request.form['stylize']
+        deleteSpecificFilesInDir2()
         
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
