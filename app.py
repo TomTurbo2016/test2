@@ -164,6 +164,7 @@ def NEW_uploaded_file():
             #downloadFile3xSize
             upscaleName = '2xSize'
             upscale.main(pathOutputPic, pathOutputPicBig, upscaleName, UPSCALE_MODEL_FOLDER)
+            imageResize2.main(pathOutputPicBig, 2)
             return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
         ##----------------------------------------------------------------------------------->
     else:
