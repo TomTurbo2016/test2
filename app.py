@@ -174,6 +174,7 @@ def NEW_uploaded_file():
             upscale.main(pathOutputPic, pathOutputPicBig, upscaleName, UPSCALE_MODEL_FOLDER)
             imageResize2.main(pathOutputPicBig, 2)
             return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
+        
         ##----------------------------------------------------------------------------------->
     else:
         filename = request.args.get('filename')
