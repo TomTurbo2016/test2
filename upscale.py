@@ -7,18 +7,18 @@ import numpy as np
 import asyncio
 
 
-async def doWork(pathInputPic, pathOutputPic):
-    parser = argparse.ArgumentParser(description='Super-Res')
-    parser.add_argument('--input_image', type=str, default=pathInputPic)
-    parser.add_argument('--model', type=str, default="/home/gexvo/mySite_WebApp/assets/upscaleModel/2xSize.pth")
-    parser.add_argument('--output_filename', type=str, default=pathOutputPic)
-    parser.add_argument('--cuda', action='store_true')
-    opt = parser.parse_args()
+async def doWork(pathInputPic, pathOutputPic, PATHtoMODEL):
+    #parser = argparse.ArgumentParser(description='Super-Res')
+    #parser.add_argument('--input_image', type=str, default=pathInputPic)
+    #parser.add_argument('--model', type=str, default="/home/gexvo/mySite_WebApp/assets/upscaleModel/2xSize.pth")
+    #parser.add_argument('--output_filename', type=str, default=pathOutputPic)
+    #parser.add_argument('--cuda', action='store_true')
+    #opt = parser.parse_args()
 
-    img = Image.open(opt.input_image).convert('YCbCr')
+    img = Image.open(pathInputPic).convert('YCbCr')
     y, cb, cr = img.split()
 
-    model = torch.load(opt.model)
+    model = torch.load(PATHtoMODEL)
     img_to_tensor = ToTensor()
     input = img_to_tensor(y).view(1, -1, y.size[1], y.size[0])
 
@@ -37,14 +37,14 @@ async def doWork(pathInputPic, pathOutputPic):
     out_img_cr = cr.resize(out_img_y.size, Image.BICUBIC)
     out_img = Image.merge('YCbCr', [out_img_y, out_img_cb, out_img_cr]).convert('RGB')
 
-    out_img.save(opt.output_filename)
+    out_img.save(pathOutputPic)
 
 
-def main(pathInputPic, pathOutputPic):
+def main(pathInputPic, pathOutputPic, upscaleName, PATHtoMODEL):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(asyncio.new_event_loop())
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(doWork(pathInputPic, pathOutputPic))
+    loop.run_until_complete(doWork(pathInputPic, pathOutputPic, PATHtoMODEL + '/' + upscaleName + '.pth'))
     loop.close()
 
 
