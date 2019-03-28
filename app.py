@@ -41,28 +41,28 @@ def downloadFileMosaic():
         
 def downloadFileChurchwindow():
     url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = MODELS_FOLDER + '/churchWindow.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileFireworks():
     url = 'https://drive.google.com/uc?export=download&id=1kJ1A06bAptFeS14yi-eQyEtVyJrMHhsl'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = MODELS_FOLDER + '/fireworks.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileRainprincess():
     url = 'https://drive.google.com/uc?export=download&id=1wGKXEboB3oTFAi8g3gQelNhxbQ53yPsp'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = MODELS_FOLDER + '/rainPrincess.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileTiger():
     url = 'https://drive.google.com/uc?export=download&id=1Bm9WqLLVliWK49lYW9C1CjqPehrMLanI'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = MODELS_FOLDER + '/tiger.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
