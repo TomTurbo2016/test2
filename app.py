@@ -11,7 +11,8 @@ import imageResize
 
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
-MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+STYLE_MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
+UPSCALE_MODEL_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel')
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -34,35 +35,35 @@ def allowed_file(filename):
 ##-------------------------------DOWNLOAD-STYLES------------------------------------------------>
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = STYLE_MODELS_FOLDER + '/mosaic.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileChurchwindow():
     url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'    
-    destination = MODELS_FOLDER + '/churchWindow.pth'
+    destination = STYLE_MODELS_FOLDER + '/churchWindow.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileFireworks():
     url = 'https://drive.google.com/uc?export=download&id=1kJ1A06bAptFeS14yi-eQyEtVyJrMHhsl'    
-    destination = MODELS_FOLDER + '/fireworks.pth'
+    destination = STYLE_MODELS_FOLDER + '/fireworks.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileRainprincess():
     url = 'https://drive.google.com/uc?export=download&id=1wGKXEboB3oTFAi8g3gQelNhxbQ53yPsp'    
-    destination = MODELS_FOLDER + '/rainPrincess.pth'
+    destination = STYLE_MODELS_FOLDER + '/rainPrincess.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileTiger():
     url = 'https://drive.google.com/uc?export=download&id=1Bm9WqLLVliWK49lYW9C1CjqPehrMLanI'    
-    destination = MODELS_FOLDER + '/tiger.pth'
+    destination = STYLE_MODELS_FOLDER + '/tiger.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
@@ -70,14 +71,14 @@ def downloadFileTiger():
 ##-------------------------------DOWNLOAD-SCALE------------------------------------------------>      
 def downloadFile2xSize():
     url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = UPSCALE_MODEL_FOLDER + '/2xSize.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFile3xSize():
     url = 'https://drive.google.com/uc?export=download&id=1cnzlliVlL4wsuP-mrf8HfllC8qGLZbaS'    
-    destination = MODELS_FOLDER + '/mosaic.pth'
+    destination = UPSCALE_MODEL_FOLDER + '/3xSizec.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
@@ -130,35 +131,37 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'rainPrincess':
             downloadFileRainprincess()
             styleName = 'rainPrincess'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'churchWindow':
             downloadFileChurchwindow()
             styleName = 'churchWindow'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'tiger':
             downloadFileTiger()
             styleName = 'tiger'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'fireworks':
             downloadFileFireworks()
             styleName = 'fireworks'
-            stylize.main(pathInputPic, pathOutputPic, styleName, MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         ##-----------------------------------------UPSCALE----------------------------------->
         elif selectedStyle == 'enlarge':
+            downloadFile2xSize()
+            #downloadFile3xSize
             upscale.main(pathOutputPic, pathOutputPicBig)
             return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
         ##----------------------------------------------------------------------------------->
