@@ -22,9 +22,9 @@ async def doWork(pathInputPic, pathOutputPic, PATHtoMODEL):
     img_to_tensor = ToTensor()
     input = img_to_tensor(y).view(1, -1, y.size[1], y.size[0])
 
-    if opt.cuda:
-        model = model.cuda()
-        input = input.cuda()
+    #if opt.cuda:
+    #    model = model.cuda()
+    #    input = input.cuda()
 
     out = model(input)
     out = out.cpu()
