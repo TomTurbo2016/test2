@@ -42,35 +42,35 @@ def allowed_file(filename):
 ##-------------------------------DOWNLOAD-STYLES------------------------------------------------>
 def downloadFileMosaic():
     url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
-    destination = STYLE_MODELS_FOLDER + '/mosaic.pth'
+    destination = STYLE_MODELS_FOLDER + '/mosaic/mosaic.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileChurchwindow():
     url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'    
-    destination = STYLE_MODELS_FOLDER + '/churchWindow.pth'
+    destination = STYLE_MODELS_FOLDER + '/churchWindow/churchWindow.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileFireworks():
     url = 'https://drive.google.com/uc?export=download&id=1kJ1A06bAptFeS14yi-eQyEtVyJrMHhsl'    
-    destination = STYLE_MODELS_FOLDER + '/fireworks.pth'
+    destination = STYLE_MODELS_FOLDER + '/fireworks/fireworks.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileRainprincess():
     url = 'https://drive.google.com/uc?export=download&id=1wGKXEboB3oTFAi8g3gQelNhxbQ53yPsp'    
-    destination = STYLE_MODELS_FOLDER + '/rainPrincess.pth'
+    destination = STYLE_MODELS_FOLDER + '/rainPrincess/rainPrincess.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileTiger():
     url = 'https://drive.google.com/uc?export=download&id=1Bm9WqLLVliWK49lYW9C1CjqPehrMLanI'    
-    destination = STYLE_MODELS_FOLDER + '/tiger.pth'
+    destination = STYLE_MODELS_FOLDER + '/tiger/tiger.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
@@ -112,7 +112,7 @@ def upload_file():
             filename = randInt + 'oT-Ti' + filename
             session['img_filename'] = filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 400 #900 & 500 works!!!
+            maxWidthHeight = 500 #900 & 500 works!!!
             imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
             return redirect(url_for('NEW_uploaded_file', filename=filename))            
         else:
@@ -139,31 +139,31 @@ def NEW_uploaded_file():
         if selectedStyle == 'mosaic':
             downloadFileMosaic()
             styleName = 'mosaic'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/mosaic')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'rainPrincess':
             downloadFileRainprincess()
             styleName = 'rainPrincess'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/rainPrincess')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'churchWindow':
             downloadFileChurchwindow()
             styleName = 'churchWindow'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/churchWindow')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'tiger':
             downloadFileTiger()
             styleName = 'tiger'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/tiger')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         elif selectedStyle == 'fireworks':
             downloadFileFireworks()
             styleName = 'fireworks'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER)
+            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + 'fireworks')
             return render_template('showPic_style.html', img_filename=fileNameOut)
         
         ##-----------------------------------------UPSCALE----------------------------------->
