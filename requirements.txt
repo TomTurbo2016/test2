@@ -6,4 +6,3 @@ asyncio
 requests
 opencv-python
 Flask
-Gunicorn
