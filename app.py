@@ -155,7 +155,7 @@ def upload_file():
                                 "history.pushState(null, document.title, location.href);"
                                 "});"
                                 "function goBack2Start() {"
-                                "window.location.href='https://gexvo.pythonanywhere.com';"
+                                "window.location.href='https://gexvo.onrender.com/';"
                                 "}"
                                 "function hideFunction() {"
                                 "document.getElementById('select1').style.visibility = 'hidden';"
@@ -254,7 +254,7 @@ def upload_file():
                         "history.pushState(null, document.title, location.href);"
                         "});"
                         "function goBack2Start() {"
-                        "window.location.href='https://gexvo.pythonanywhere.com';"
+                        "window.location.href='https://gexvo.onrender.com/';"
                         "}"
                         "function hideFunction() {"
                         "document.getElementById('backB').style.visibility = 'hidden';"
@@ -329,7 +329,7 @@ def upload_file():
                         "history.pushState(null, document.title, location.href);"
                         "});"
                         "function goBack2Start() {"
-                        "window.location.href='https://gexvo.pythonanywhere.com';"
+                        "window.location.href='https://gexvo.onrender.com/';"
                         "}"
                         "function hideFunction() {"
                         "document.getElementById('select1').style.visibility = 'hidden';"
@@ -416,7 +416,7 @@ def file_upload_error_nofile():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.pythonanywhere.com';
+    window.location.href='https://gexvo.onrender.com/';
     }
     </script>
     '''
@@ -430,7 +430,7 @@ def style_error_nostyle():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.pythonanywhere.com';
+    window.location.href='https://gexvo.onrender.com/';
     }
     </script>
     '''
@@ -444,7 +444,7 @@ def file_upload_error_nojpg():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.pythonanywhere.com';
+    window.location.href='https://gexvo.onrender.com/';
     }
     </script>
     '''
@@ -458,7 +458,7 @@ def generalError():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.pythonanywhere.com';
+    window.location.href='https://gexvo.onrender.com/';
     }
     </script>
     '''
