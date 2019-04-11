@@ -13,10 +13,10 @@ import PIL.Image as Image
 
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
+DOWNSIZE_INPUT_IMAGE = 400 #--> 255 px: Downsize uploaded Image (cv2 Image)
 PATH_TO_BASE64_TXT_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/imgStr.txt')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
-DOWNSIZE_INPUT_IMAGE = 255 #--> 255 px: Downsize uploaded Image (cv2 Image)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
 
