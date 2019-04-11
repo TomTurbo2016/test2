@@ -1,19 +1,25 @@
 import os
-import fnmatch
-from flask import Flask, request, redirect, url_for, render_template, session
-from werkzeug import secure_filename
-from uuid import uuid4
+from flask import Flask, request, redirect, url_for, session #, render_template
+from random import randint
 import requests
-import stylize
-import upscale
+import stylize2
+import upscale2
 import imageResize
 import imageResize2
+from cv2 import imencode
+import base64
+from io import BytesIO
+import PIL.Image as Image
 
 
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
+PATH_TO_BASE64_TXT_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/imgStr.txt')
+PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
+PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModels/')
+DOWNSIZE_INPUT_IMAGE = 255 #--> 255 px: Downsize uploaded Image (cv2 Image)
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'JPG', 'JPEG'])
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/userUploadImages')
-STYLE_MODELS_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels')
-UPSCALE_MODEL_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel')
+
 
 app = Flask(__name__, static_url_path='/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -21,77 +27,53 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = os.urandom(13)
 
 
-def deleteSpecificFilesInDir():
-    filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
-    for f in filelist:
-        if fnmatch.fnmatch(f, str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
-            os.remove(os.path.join(UPLOAD_FOLDER, f))
-            
-def deleteSpecificFilesInDir2():
-    filelist = [ f for f in os.listdir(UPLOAD_FOLDER) if f.endswith(".jpg") or f.endswith(".jpeg") or f.endswith(".JPG") or f.endswith(".JPEG") ]
-    for f in filelist:
-        if fnmatch.fnmatch(f, 'out_' + str(session['randInt']) + 'oT-Ti' + '*') or fnmatch.fnmatch(f, 'out_big_' + str(session['randInt']) + '*'):
-            os.remove(os.path.join(UPLOAD_FOLDER, f))
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def saveBase64StringToFile(_base64string):
+    with open(PATH_TO_BASE64_TXT_FILE,'a') as f:
+        f.write('\n' + session['randInt'] + _base64string)
 
+def openBase64StringFromFile():
+    with open(PATH_TO_BASE64_TXT_FILE, 'r') as file:
+        for i, line in enumerate(file, start=0):
+            if line[:2] == session['randInt']:
+                return line[2:]
 
-##-------------------------------DOWNLOAD-STYLES------------------------------------------------>
+def deleteLine_Base64String():
+    with open(PATH_TO_BASE64_TXT_FILE,'r+') as f:
+        new_f = f.readlines()
+        f.seek(0)
+        for line in new_f:
+            if session['randInt'] not in line[:2]:
+                f.write(line)
+            f.truncate()
+
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
 def downloadFileMosaic():
-    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'    
-    destination = STYLE_MODELS_FOLDER + '/mosaic/mosaic.pth'
+    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
+    destination = PATH_TO_STYLE_FILES + 'mosaic.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
         
 def downloadFileChurchwindow():
     url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'    
-    destination = STYLE_MODELS_FOLDER + '/churchWindow/churchWindow.pth'
+    destination = PATH_TO_STYLE_FILES + 'churchWindow.pth'
     r = requests.get(url)
     with open(destination, 'wb') as f:
         f.write(r.content)
-        
-def downloadFileFireworks():
-    url = 'https://drive.google.com/uc?export=download&id=1kJ1A06bAptFeS14yi-eQyEtVyJrMHhsl'    
-    destination = STYLE_MODELS_FOLDER + '/fireworks/fireworks.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
-def downloadFileRainprincess():
-    url = 'https://drive.google.com/uc?export=download&id=1wGKXEboB3oTFAi8g3gQelNhxbQ53yPsp'    
-    destination = STYLE_MODELS_FOLDER + '/rainPrincess/rainPrincess.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
-def downloadFileTiger():
-    url = 'https://drive.google.com/uc?export=download&id=1Bm9WqLLVliWK49lYW9C1CjqPehrMLanI'    
-    destination = STYLE_MODELS_FOLDER + '/tiger/tiger.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
-##-------------------------------DOWNLOAD-SCALE------------------------------------------------>      
-def downloadFile2xSize():
-    url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'    
-    destination = UPSCALE_MODEL_FOLDER + '/2xSize.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
-def downloadFile3xSize():
-    url = 'https://drive.google.com/uc?export=download&id=1cnzlliVlL4wsuP-mrf8HfllC8qGLZbaS'    
-    destination = UPSCALE_MODEL_FOLDER + '/3xSizec.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
-        
-##--------------------------------------------------------------------------------------------->      
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~SCALE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
+def downloadFile2xSize():
+    url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'
+    destination = PATH_TO_SCALE_FILE + '2xSize.pth'
+    r = requests.get(url)
+    with open(destination, 'wb') as f:
+        f.write(r.content)
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -102,88 +84,327 @@ def upload_file():
         session['counter'] = 0
     if request.method == 'POST':
         session['counter'] += 1
-        if 'file' not in request.files:
-            return redirect(url_for('file_upload_error_nofile'))
-        file = request.files['file']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            session['randInt'] = str(uuid4())
-            randInt = str(session['randInt'])
-            filename = randInt + 'oT-Ti' + filename
-            session['img_filename'] = filename
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            maxWidthHeight = 500 #900 & 500 works!!!
-            imageResize.main(maxWidthHeight, UPLOAD_FOLDER + '/' + filename)
-            return redirect(url_for('NEW_uploaded_file', filename=filename))            
+        doStyle = request.form.get('doStyle','')
+        if doStyle != '1' and doStyle != '2':
+            if 'file' not in request.files:
+                return redirect(url_for('file_upload_error_nofile'))
+            fileStorage = request.files['file']
+            if fileStorage and allowed_file(fileStorage.filename):
+                img = imageResize.main2(DOWNSIZE_INPUT_IMAGE, fileStorage)
+                img = imencode('.jpg', img)[1].tostring()
+                img = base64.b64encode(img).decode("utf-8")
+                session['randInt'] = str(chr(randint(36,126)) + chr(randint(36,126)))
+                saveBase64StringToFile(img)
+                del fileStorage
+                return("<!DOCTYPE html>"
+                    "<html lang='en'>"
+                        "<head>"
+                            "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                            "<title>Style-Transfer</title>"
+                            "<meta charset='utf-8'>"
+                            "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                            "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'/>"
+                        "</head>"
+                        "<body style='background-color:white;'>"
+                            "<div class='container-fluid'>"
+                                "<div class='col-sm-9'>"
+                                    "<h4>"
+                                        "<small>"
+                                            "Style-Transfer by gexvo"
+                                        "</small>"
+                                    "</h4>"
+                                    "<h4>"
+                                        "<form id='select1' method='post' runat='server'>"
+                                            "<input type='hidden' value='1' name='doStyle'>"
+                                            "<div style='width:200px;'>"
+                                                "<select name='stylize' "
+                                                        "style='height:50px; font-size:20px; font-weight:bold; background-color:#b0e05e; color:black;' "
+                                                        "onchange='this.form.submit(); hideFunction()'>"
+                                                    "<option selected disabled>Choose style</option>"
+                                                    "<option value='mosaic'>Mosaic</option>"
+                                                    "<option value='churchWindow'>Church-Window</option>"
+                                                "</select>"
+                                            "</div>"
+                                        "</form>"
+                                    "</h4>"
+                                    "<p id='loadingText1' style='display:none; margin-left:2em;'>"
+                                        "<b>"
+                                            "Your pictue is being style-transferred. Please wait!"
+                                        "</b>"
+                                    "</p>"
+                                    "<p id='loadingText2' style='color:red; display:none; margin-left:2em;'>"
+                                        "<b>"
+                                            "This process can take about 1 minute."
+                                        "</b>"
+                                    "</p>"
+                                    "<hr>"
+                                    "<img id='inputPic' src='data:image/jpg;base64," + img + "' hspace='20'/>"
+                                    "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
+                                    "<hr>"
+                                    "<button type='button'"
+                                            "id='deleteB'"
+                                            "onclick='goBack2Start()'"
+                                            "style='height:50px; font-size:20px'"
+                                            "class='btn btn-danger'>"
+                                        "Delete picture"
+                                    "</button>"
+                                "</div>"
+                            "</div>"
+                            "<script>"
+                                "history.pushState(null, document.title, location.href);"
+                                "window.addEventListener('popstate', function (event) {"
+                                "history.pushState(null, document.title, location.href);"
+                                "});"
+                                "function goBack2Start() {"
+                                "window.location.href='https://gexvo.pythonanywhere.com';"
+                                "}"
+                                "function hideFunction() {"
+                                "document.getElementById('select1').style.visibility = 'hidden';"
+                                "document.getElementById('deleteB').style.visibility = 'hidden';"
+                                "document.getElementById('inputPic').style.display = 'none';"
+                                "document.getElementById('loading').style.display = 'block';"
+                                "document.getElementById('loadingText1').style.display = 'block';"
+                                "document.getElementById('loadingText2').style.display = 'block';"
+                                "}"
+                            "</script>"
+                            "<p style='color:white'>.</p>"
+                        "</body>"
+                    "</html>")
+            else:
+                return redirect(url_for('file_upload_error_nojpg'))
+        elif doStyle != '2':
+            ioFile = BytesIO()
+            ioFile.write(base64.b64decode(openBase64StringFromFile()))
+            ioFile.seek(0)
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
+            selectedStyle = request.form['stylize']
+            if selectedStyle == 'mosaic':
+                downloadFileMosaic()
+                img = stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
+            elif selectedStyle == 'churchWindow':
+                downloadFileChurchwindow()
+                img = stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
+            else:
+                return redirect(url_for('style_error_nostyle'))
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
+                del ioFile
+                downloadFile2xSize()
+                img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
+                img = imageResize2.main2(img) #--> 1/3 downscale
+                img = Image.fromarray(img)#.astype("uint8")
+                rawBytes = BytesIO()
+                img.save(rawBytes, "JPEG")
+                rawBytes.seek(0)
+                del img
+                return("<!DOCTYPE html>"
+                "<html lang='en'>"
+                    "<head>"
+                        "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                        "<title>Style-Transfer</title>"
+                        "<meta charset='utf-8'>"
+                        "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                        "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'>"
+                    "</head>"
+                    "<body style='background-color:white;'>"
+                        "<div class='container-fluid'>"
+                            "<div class='col-sm-9'>"
+                                "<h4>"
+                                    "<small>"
+                                        "Style-Transfer by gexvo"
+                                    "</small>"
+                                "</h4>"
+                                "<p id='loadingText1' style='display:none; margin-left:2em;'>"
+                                    "<b>"
+                                        "Your pictue is being enlarged. Please wait!"
+                                    "</b>"
+                                "</p>"
+                                "<hr>"
+                                "<img id='inputPic' src='data:image/jpg;base64," + base64.b64encode(rawBytes.read()).decode("utf-8") + "' hspace='20'/>"
+                                "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
+                                "<hr>"
+                                "<table>"
+                                    "<tr>"
+                                        "<th>"
+                                            "<form method='post' runat='server'>"
+                                                "<input type='hidden' value='2' name='doStyle'>"
+                                                "<button type='button' "
+                                                    "id='backB' "
+                                                    "onclick='this.form.submit();' "
+                                                    "style='height:50px; font-size:20px' "
+                                                    "class='btn btn-primary'>"
+                                                        "Select style"
+                                                "</button>"
+                                            "</form>"
+                                        "<th>"
+                                        "<th>"
+                                            "<button type='button' "
+                                                "id='deleteB' "
+                                                "onclick='goBack2Start()' "
+                                                "style='height:50px; font-size:20px' "
+                                                "class='btn btn-danger'>"
+                                                    "Delete picture"
+                                            "</button>"
+                                        "<th>"
+                                    "<tr>"
+                                "<table>"
+                            "</div>"
+                        "</div>"
+                        "<script>"
+                            "history.pushState(null, document.title, location.href);"
+                            "window.addEventListener('popstate', function (event) {"
+                            "history.pushState(null, document.title, location.href);"
+                            "});"
+                            "function goBack2Start() {"
+                            "window.location.href='https://gexvo.pythonanywhere.com';"
+                            "}"
+                            "function hideFunction() {"
+                            "document.getElementById('backB').style.visibility = 'hidden';"
+                            "document.getElementById('deleteB').style.visibility = 'hidden';"
+                            "document.getElementById('inputPic').style.display = 'none';"
+                            "document.getElementById('loading').style.display = 'block';"
+                            "document.getElementById('loadingText1').style.display = 'block';"
+                            "document.getElementById('loadingText2').style.display = 'block';"
+                            "}"
+                        "</script>"
+                        "<p style='color:white'>.</p>"
+                    "</body>"
+                "</html>")
         else:
-            return redirect(url_for('file_upload_error_nojpg'))
+            return("<!DOCTYPE html>"
+            "<html lang='en'>"
+                "<head>"
+                    "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                    "<title>Style-Transfer</title>"
+                    "<meta charset='utf-8'>"
+                    "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                    "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'/>"
+                "</head>"
+                "<body style='background-color:white;'>"
+                    "<div class='container-fluid'>"
+                        "<div class='col-sm-9'>"
+                            "<h4>"
+                                "<small>"
+                                    "Style-Transfer by gexvo"
+                                "</small>"
+                            "</h4>"
+                            "<h4>"
+                                "<form id='select1' method='post' runat='server'>"
+                                    "<input type='hidden' value='1' name='doStyle'>"
+                                    "<div style='width:200px;'>"
+                                        "<select name='stylize' "
+                                                "style='height:50px; font-size:20px; font-weight:bold; background-color:#b0e05e; color:black;' "
+                                                "onchange='this.form.submit(); hideFunction()'>"
+                                            "<option selected disabled>Choose style</option>"
+                                            "<option value='mosaic'>Mosaic</option>"
+                                            "<option value='churchWindow'>Church-Window</option>"
+                                        "</select>"
+                                    "</div>"
+                                "</form>"
+                            "</h4>"
+                            "<p id='loadingText1' style='display:none; margin-left:2em;'>"
+                                "<b>"
+                                    "Your pictue is being style-transferred. Please wait!"
+                                "</b>"
+                            "</p>"
+                            "<p id='loadingText2' style='color:red; display:none; margin-left:2em;'>"
+                                "<b>"
+                                    "This process can take about 1 minute."
+                                "</b>"
+                            "</p>"
+                            "<hr>"
+                            "<img id='inputPic' src='data:image/jpg;base64," + openBase64StringFromFile() + "' hspace='20'/>"
+                            "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
+                            "<hr>"
+                            "<button type='button'"
+                                    "id='deleteB'"
+                                    "onclick='goBack2Start()'"
+                                    "style='height:50px; font-size:20px'"
+                                    "class='btn btn-danger'>"
+                                "Delete picture"
+                            "</button>"
+                        "</div>"
+                    "</div>"
+                    "<script>"
+                        "history.pushState(null, document.title, location.href);"
+                        "window.addEventListener('popstate', function (event) {"
+                        "history.pushState(null, document.title, location.href);"
+                        "});"
+                        "function goBack2Start() {"
+                        "window.location.href='https://gexvo.pythonanywhere.com';"
+                        "}"
+                        "function hideFunction() {"
+                        "document.getElementById('select1').style.visibility = 'hidden';"
+                        "document.getElementById('deleteB').style.visibility = 'hidden';"
+                        "document.getElementById('inputPic').style.display = 'none';"
+                        "document.getElementById('loading').style.display = 'block';"
+                        "document.getElementById('loadingText1').style.display = 'block';"
+                        "document.getElementById('loadingText2').style.display = 'block';"
+                        "}"
+                    "</script>"
+                    "<p style='color:white'>.</p>"
+                "</body>"
+            "</html>")
     else:
         if session['counter'] >= 1:
-            deleteSpecificFilesInDir()
-        return render_template('main_page.html')
-
-
-@app.route('/' + str(os.urandom(13)), methods=['GET', 'POST'])
-def NEW_uploaded_file():
-    if request.method == 'POST':
-        deleteSpecificFilesInDir2()
-        fileName = str(session['img_filename'])
-        pathInputPic = UPLOAD_FOLDER + '/' + fileName
-        pathOutputPic = UPLOAD_FOLDER + '/out_' + fileName
-        pathOutputPicBig = UPLOAD_FOLDER + '/out_big_' + fileName
-        fileNameOut = 'out_' + fileName
-        fileNameOutBig = 'out_big_' + fileName
-        ##-----------------------------------------STYLES------------------------------------>
-        selectedStyle = request.form['stylize']
-        
-        if selectedStyle == 'mosaic':
-            downloadFileMosaic()
-            styleName = 'mosaic'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/mosaic')
-            return render_template('showPic_style.html', img_filename=fileNameOut)
-        
-        elif selectedStyle == 'rainPrincess':
-            downloadFileRainprincess()
-            styleName = 'rainPrincess'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/rainPrincess')
-            return render_template('showPic_style.html', img_filename=fileNameOut)
-        
-        elif selectedStyle == 'churchWindow':
-            downloadFileChurchwindow()
-            styleName = 'churchWindow'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/churchWindow')
-            return render_template('showPic_style.html', img_filename=fileNameOut)
-        
-        elif selectedStyle == 'tiger':
-            downloadFileTiger()
-            styleName = 'tiger'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/tiger')
-            return render_template('showPic_style.html', img_filename=fileNameOut)
-        
-        elif selectedStyle == 'fireworks':
-            downloadFileFireworks()
-            styleName = 'fireworks'
-            stylize.main(pathInputPic, pathOutputPic, styleName, STYLE_MODELS_FOLDER + '/fireworks')
-            return render_template('showPic_style.html', img_filename=fileNameOut)
-        
-        ##-----------------------------------------UPSCALE----------------------------------->
-        elif selectedStyle == 'enlarge':
-            downloadFile2xSize()
-            #downloadFile3xSize
-            upscaleName = '2xSize'
-            upscale.main(pathOutputPic, pathOutputPicBig, upscaleName, UPSCALE_MODEL_FOLDER)
-            imageResize2.main(pathOutputPicBig, 2)
-            return render_template('showPic_upscale.html', img_filename=fileNameOutBig)
-        
-        ##----------------------------------------------------------------------------------->
-    else:
-        filename = request.args.get('filename')
-        return render_template('showPic.html', img_filename=filename)
-
-
-@app.errorhandler(Exception)
-def exception_handler(error):
-    return "!!!!"  + repr(error)
+            deleteLine_Base64String()
+        return ("<!DOCTYPE html>"
+        "<html lang='en'>"
+            "<head>"
+                "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                "<title>gexvo - Upload a Picture</title>"
+                "<meta charset='utf-8'>"
+                "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'>"
+            "</head>"
+            "<body style='background-color:white;'>"
+                "<div class='container-fluid'>"
+                    "<div class='col-sm-9'>"
+                        "<h4>"
+                            "<small>"
+                                "Welcome to Neural Style Transfer by gexvo"
+                            "</small>"
+                        "</h4>"
+                        "<h4>"
+                        "<hr>"
+                            "<p style='margin-left:25px;'>"
+                                "Upload  an image and apply"
+                            "</p>"
+                            "<p style='margin-left:25px;'>"
+                                "a pre-trained style model."
+                            "</p>"
+                            "<!--<img src='static/otherStuff/startPic4.jpg' hspace='10'/>-->"
+                            "<img id='upLo' src='static/otherStuff/uploading2.gif' style='display:none'/>"
+                            "<form method=post enctype=multipart/form-data runat='server'>"
+                                "<div>"
+                                    "<p style='color:white'>.</p>"
+                                    "<p>"
+                                        "<label id='lab'>"
+                                            "<b style='border-style:solid; margin-left:12px; color:black; font-size:200%; background-color:#f6fc9c; font-weight:bold; cursor: pointer;'>"
+                                                "Click to upload"
+                                            "</b>"
+                                            "<input type='file' "
+                                                "name='file' "
+                                                "onchange='this.form.submit(); this.form.onsubmit=hideFunction();' "
+                                                "style='visibility: hidden;'/>"
+                                        "</label>"
+                                    "</p>"
+                                "</div>"
+                            "</form>"
+                        "<hr>"
+                    "</div>"
+                "</div>"
+                "<script>"
+                    "history.pushState(null, document.title, location.href);"
+                    "window.addEventListener('popstate', function (event) {"
+                    "history.pushState(null, document.title, location.href);"
+                    "});"
+                    "function hideFunction() {"
+                    "document.getElementById('lab').style.visibility = 'hidden';"
+                    "document.getElementById('upLo').style.display = 'block';"
+                    "}"
+                "</script>"
+            "</body>"
+        "</html>")
 
 
 ##Error-Messages:
@@ -196,7 +417,21 @@ def file_upload_error_nofile():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.onrender.com';
+    window.location.href='https://gexvo.pythonanywhere.com';
+    }
+    </script>
+    '''
+
+@app.route('/STYLE_ERROR_NoStyleSelected')
+def style_error_nostyle():
+    return '''
+    <!doctype html>
+    <title>Style ERROR - No Style selected</title>
+    <h1>No style selected</h1>
+    <button onclick="goBack()">Go Back</button>
+    <script>
+    function goBack() {
+    window.location.href='https://gexvo.pythonanywhere.com';
     }
     </script>
     '''
@@ -210,21 +445,7 @@ def file_upload_error_nojpg():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.onrender.com';
-    }
-    </script>
-    '''
-
-@app.route('/GENERALERROR')
-def file_too_big_error():
-    return '''
-    <!doctype html>
-    <title>File too big ERROR</title>
-    <h1>Something went wrong!</h1>
-    <button onclick="goBack()">Go Back</button>
-    <script>
-    function goBack() {
-    window.location.href='https://gexvo.onrender.com';
+    window.location.href='https://gexvo.pythonanywhere.com';
     }
     </script>
     '''
@@ -238,7 +459,7 @@ def generalError():
     <button onclick="goBack()">Go Back</button>
     <script>
     function goBack() {
-    window.location.href='https://gexvo.onrender.com';
+    window.location.href='https://gexvo.pythonanywhere.com';
     }
     </script>
     '''
