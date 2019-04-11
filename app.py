@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for, session #, render_template
+from flask import Flask, request, redirect, url_for, session
 from random import randint
 import requests
 import stylize2
