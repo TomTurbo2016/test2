@@ -1,20 +1,35 @@
-import cv2
+from cv2 import imread, imdecode, resize, imwrite, IMREAD_COLOR, INTER_AREA
+import numpy as np
+
 
 def main(baseWidth, pathInputPic):
-    oriimg = cv2.imread(pathInputPic)
+    oriimg = imread(pathInputPic)
     height, width, depth = oriimg.shape
     if width > baseWidth or height > baseWidth:
         if height >= width:
             imgScale = baseWidth/width
             newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
-            oriimg = cv2.resize(oriimg, (int(newX), int(newY)), interpolation=cv2.INTER_AREA)
+            oriimg = resize(oriimg, (int(newX), int(newY)), interpolation=INTER_AREA)
         else:
             imgScale = baseWidth/height
             newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
-            oriimg = cv2.resize(oriimg, (int(newX), int(newY)), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(pathInputPic, oriimg)
+            oriimg = resize(oriimg, (int(newX), int(newY)), interpolation=INTER_AREA)
+    imwrite(pathInputPic, oriimg)
 
 
-##---------------------------------------------------------------------------------------------------------->
-#Preferable interpolation methods are cv.INTER_AREA for shrinking and cv.INTER_CUBIC(slow) & cv.INTER_LINEAR
-#for zooming. By default, interpolation method used is cv.INTER_LINEAR for all resizing purposes.
+def main2(baseWidth, imageBytes):
+    npArr = np.asarray(bytearray(imageBytes.read()), dtype=np.uint8)
+    oriimg = imdecode(npArr, IMREAD_COLOR)
+    height, width, depth = oriimg.shape
+    if width > baseWidth or height > baseWidth:
+        if height >= width:
+            imgScale = baseWidth/width
+            newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
+            oriimg = resize(oriimg, (int(newX), int(newY)), interpolation=INTER_AREA)
+        else:
+            imgScale = baseWidth/height
+            newX,newY = oriimg.shape[1]*imgScale, oriimg.shape[0]*imgScale
+            oriimg = resize(oriimg, (int(newX), int(newY)), interpolation=INTER_AREA)
+        return oriimg
+    else:
+        return oriimg
