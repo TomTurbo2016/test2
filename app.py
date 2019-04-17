@@ -1,20 +1,22 @@
 import os
-from flask import Flask, request, redirect, url_for, session
+from flask import Flask, request, redirect, url_for, session #, render_template
 from random import randint
 import requests
 import stylize2
 import upscale2
 import imageResize
 import imageResize2
+#import watermark
 from cv2 import imencode
 import base64
 from io import BytesIO
 import PIL.Image as Image
 
 
+
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
 DOWNSIZE_INPUT_IMAGE = 400 #--> 255 px: Downsize uploaded Image (cv2 Image)
-PATH_TO_BASE64_TXT_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/imgStr.txt')
+PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
@@ -30,24 +32,15 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def saveBase64StringToFile(_base64string):
-    with open(PATH_TO_BASE64_TXT_FILE,'a') as f:
-        f.write('\n' + session['randInt'] + _base64string)
+def saveBase64StringToFile(_path, _base64string):
+    with open(_path,'a') as f:
+        f.write('\n' + session['randString'] + _base64string)
 
-def openBase64StringFromFile():
-    with open(PATH_TO_BASE64_TXT_FILE, 'r') as file:
+def openBase64StringFromFile(_path):
+    with open(_path, 'r') as file:
         for i, line in enumerate(file, start=0):
-            if line[:2] == session['randInt']:
+            if line[:2] == session['randString']:
                 return line[2:]
-
-def deleteLine_Base64String():
-    with open(PATH_TO_BASE64_TXT_FILE,'r+') as f:
-        new_f = f.readlines()
-        f.seek(0)
-        for line in new_f:
-            if session['randInt'] not in line[:2]:
-                f.write(line)
-            f.truncate()
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
 def downloadFileMosaic():
@@ -77,12 +70,7 @@ def downloadFile2xSize():
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    if session.get('counter') == True:
-        session['counter'] += 1
-    else:
-        session['counter'] = 0
     if request.method == 'POST':
-        session['counter'] += 1
         doStyle = request.form.get('doStyle','')
         if doStyle != '1' and doStyle != '2':
             if 'file' not in request.files:
@@ -92,8 +80,17 @@ def upload_file():
                 img = imageResize.main2(DOWNSIZE_INPUT_IMAGE, fileStorage)
                 img = imencode('.jpg', img)[1].tostring()
                 img = base64.b64encode(img).decode("utf-8")
-                session['randInt'] = str(chr(randint(36,126)) + chr(randint(36,126)))
-                saveBase64StringToFile(img)
+
+                # Create txt file for user:
+                session['randFileName'] = str(chr(randint(97,123)) + chr(randint(65,91)) + chr(randint(97,123)) + chr(randint(65,91)))
+                if not os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt'):
+                    f = open(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt', 'x')
+                    f.close()
+
+                # Save uploaded pic to txt file:
+                session['randString'] = str(chr(randint(36,126)) + chr(randint(36,126)))
+                saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt', img)
+
                 del fileStorage
                 return("<!DOCTYPE html>"
                     "<html lang='en'>"
@@ -173,7 +170,7 @@ def upload_file():
                 return redirect(url_for('file_upload_error_nojpg'))
         elif doStyle != '2':
             ioFile = BytesIO()
-            ioFile.write(base64.b64decode(openBase64StringFromFile()))
+            ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt')))
             ioFile.seek(0)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
             selectedStyle = request.form['stylize']
@@ -344,8 +341,9 @@ def upload_file():
                 "</body>"
             "</html>")
     else:
-        if session['counter'] >= 1:
-            deleteLine_Base64String()
+        if session.get('randFileName') is not None:
+            if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt'):
+                os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['randFileName']) + '.txt')
         return ("<!DOCTYPE html>"
         "<html lang='en'>"
             "<head>"
