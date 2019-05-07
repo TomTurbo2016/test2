@@ -1,13 +1,3 @@
-
-
-####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-START_URL = 'https://gexvo.onrender.com'
-PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
-PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
-PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
-####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
-
-
 import os
 import sys
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for
@@ -20,6 +10,12 @@ import upscale2
 import imageResize2
 #import watermark
 
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
+START_URL = 'https://gexvo.onrender.com'
+PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
+PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
+PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 app = Flask(__name__)
 app.secret_key = os.urandom(13)
