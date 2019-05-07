@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <link rel="shortcut icon" type="image/png" href="static/otherStuff/favicon.ico"/>
+        <title>gexvo - Upload a Picture</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src='https://code.jquery.com/jquery-2.2.4.min.js'
+            integrity='sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44='
+            crossorigin='anonymous'>
+        </script>
+        <style>
+        </style>
+    </head>
+
+    <body style="background-color:white;">
+        <div class="container-fluid">
+            <div class="col-sm-9">
+                <h4>
+                    <small>
+                        Welcome to Neural Style Transfer by gexvo
+                    </small>
+                </h4>
+                <h4>
+                <hr>
+                    <p style="margin-left:25px;">
+                        Upload  an image and apply
+                    </p>
+                    <p style="margin-left:25px;">
+                        a pre-trained style model.
+                    </p>
+                    <!--<img src='static/otherStuff/startPic4.jpg' hspace="10"/>-->
+                    <img id="upLo" src='static/otherStuff/uploading2.gif' style='display:none'/>
+                    <form method='post' enctype='multipart/form-data' runat='server'>
+                        <div>
+                            <p style="color:white">.</p>
+                            <p>
+                                <label id="lab">
+                                    <b style="border-style:solid; margin-left:12px; color:black; font-size:200%; background-color:#f6fc9c; font-weight:bold; cursor: pointer;">
+                                        Click to upload
+                                    </b>
+                                    <input id='input'
+                                           type="file"
+                                           name="file"
+                                           accept="image/*"
+                                           style="visibility: hidden;"/>
+                                </label>
+                            </p>
+                        </div>
+                    </form>
+                <hr>
+            </div>
+        </div>
+
+
+        <script type='text/javascript'>
+
+            history.pushState(null, document.title, location.href);
+
+            window.addEventListener('popstate', function (event) {
+                history.pushState(null, document.title, location.href);
+            });
+
+            function hideFunction() {
+                document.getElementById('lab').style.visibility = 'hidden';
+                document.getElementById('upLo').style.display = 'block';
+            }
+
+            window.onload = addEvtHandler;
+            function addEvtHandler() {
+	            var objField = document.getElementById('input');
+	            objField.onchange = function () {
+	                if (validateFileType() == 1)
+	                {
+	                    // https://stackoverflow.com/questions/3828554/how-to-allow-input-type-file-to-accept-only-image-files
+	                    alert("Only jpg/jpeg and png files are allowed!");
+                        //document.location.href = 'https://gexvo.pythonanywhere.com';
+	                }
+	                else
+	                {
+	                    hideFunction();
+	                    handleFiles();
+	                }
+	            }
+            }
+
+            function handleFiles()
+            {
+                var dataurl = null;
+                var filesToUpload = document.getElementById('input').files;
+                var file = filesToUpload[0];
+
+                var checkOrientation = 0;
+                getOrientation(file, function(orientation)
+                {
+                    if (orientation == 1 ||
+                        orientation == 2 ||
+                        orientation == 3 ||
+                        orientation == 4 ||
+                        orientation == -1 ||
+                        orientation == -2)
+                        { }
+                    else
+                    {
+                        checkOrientation++;
+                    }
+                    //alert(orientation);
+                });
+
+                // Create an image
+                var img = document.createElement('img');
+                // Create a file reader
+                var reader = new FileReader();
+                // Set the image once loaded into file reader
+                reader.onload = function(e)
+                {
+                    img.src = e.target.result;
+
+                    img.onload = function () {
+                        var canvas = document.createElement('canvas');
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(img, 0, 0);
+
+                        var MAX_WIDTH = 500;
+                        var MAX_HEIGHT = 500;
+                        var width = img.width;
+                        var height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+
+                        if (checkOrientation == 0) // Orientation OK
+                        {
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                        }
+                        else // Orientation NOT OK
+                        {
+                            // https://stackoverflow.com/questions/2677671/how-do-i-rotate-a-single-object-on-an-html-5-canvas
+                            // --> Orientation Numbers: /home/gexvo/mySite_WebApp/assets/ImageOrientation-values.jpg
+                            // https://www.blog.pythonlibrary.org/2010/03/28/getting-photo-metadata-exif-using-python/
+                            var degree = 90;
+                            canvas.width = height;
+                            canvas.height = width;
+                            var ctx = canvas.getContext('2d');
+                            //Convert degrees to radian
+                            var rad = degree * Math.PI / 180;
+                            //Set the origin to the center of the image
+                            ctx.translate(0 + height / 2, 0 + width / 2);
+                            //Rotate the canvas around the origin
+                            ctx.rotate(rad);
+                            //draw the image
+                            ctx.drawImage(img, width / 2 * (-1), height / 2 * (-1), width, height);
+                        }
+
+                        //var b64 = String(canvas.toDataURL().replace(/^data:image\/(png|jpg);base64,/, '')) //b64=png-Image!
+                        var b64 = String(canvas.toDataURL('image/jpeg', 1.0).replace(/^data:image\/jpeg;base64,/, '')) //b64=jpg-Image!
+
+                        var id = makeid1(3) + makeid2(b64);
+                        dataurl = b64 + id;
+
+                        $.ajax({
+                            type: 'POST',
+                            url: '/upload',
+                            data: JSON.stringify({ '0' : dataurl }),
+                            contentType: 'text/plain',
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success:function(result){
+                                document.location.href = 'https://gexvo.onrender.com/showPic?id=' + id;
+                            }
+                        });
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+
+            function makeid1(length) {
+                var result = '';
+                var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                var charactersLength = characters.length;
+                for ( var i = 0; i < length; i++ )
+                {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            }
+
+            function makeid2(inputString) {
+                var len = inputString.length;
+                var result = inputString.charAt(len / 2) +
+    		            inputString.charAt((len / 2) - 1) +
+                        inputString.charAt(len / 2 + 1);
+                var check = 0;
+                var i = result.length;
+                while (i--)
+                {
+	                if (result.charAt(i) == '+' || result.charAt(i) == '/' || result.charAt(i) == '=')
+  	                {
+    	                check++;
+                    }
+                }
+                if (check > 0)
+                {
+                    result = makeid1(3);
+                }
+                return result;
+            }
+
+            function getOrientation(file, callback) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var view = new DataView(e.target.result);
+                    if (view.getUint16(0, false) != 0xFFD8)
+                    {
+                        return callback(-2);
+                    }
+                    var length = view.byteLength, offset = 2;
+                    while (offset < length)
+                    {
+                        if (view.getUint16(offset+2, false) <= 8) return callback(-1);
+                        var marker = view.getUint16(offset, false);
+                        offset += 2;
+                        if (marker == 0xFFE1)
+                        {
+                            if (view.getUint32(offset += 2, false) != 0x45786966)
+                            {
+                                return callback(-1);
+                            }
+                            var little = view.getUint16(offset += 6, false) == 0x4949;
+                            offset += view.getUint32(offset + 4, little);
+                            var tags = view.getUint16(offset, little);
+                            offset += 2;
+                            for (var i = 0; i < tags; i++)
+                            {
+                                if (view.getUint16(offset + (i * 12), little) == 0x0112)
+                                {
+                                    return callback(view.getUint16(offset + (i * 12) + 8, little));
+                                }
+                            }
+                        }
+                        else if ((marker & 0xFF00) != 0xFF00)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            offset += view.getUint16(offset, false);
+                        }
+                    }
+                    return callback(-1);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            function validateFileType(){
+                var fileName = document.getElementById("input").value;
+                var idxDot = fileName.lastIndexOf(".") + 1;
+                var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+                if (extFile=="jpg" || extFile=="jpeg" || extFile=="png")
+                {
+                    return 0; // OK
+                }
+                else
+                {
+                    return 1; // NOT OK
+                }
+            }
+
+        </script>
+
+
+    </body>
+
+</html>
