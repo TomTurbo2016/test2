@@ -1,18 +1,4 @@
 
-import os
-from flask import Flask, request, redirect, url_for, session #, render_template
-from random import randint
-import requests
-import stylize2
-import upscale2
-import imageResize
-import imageResize2
-from cv2 import imencode
-import base64
-from io import BytesIO
-import PIL.Image as Image
-#import watermark
-
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
 START_URL = 'https://gexvo.onrender.com'
@@ -22,8 +8,20 @@ PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), '
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
+import os
+import sys
+from flask import Flask, request, jsonify, session, render_template, redirect, url_for
+from io import BytesIO
+from PIL import Image
+import base64
+import requests
+import stylize2
+import upscale2
+import imageResize2
+#import watermark
 
-app = Flask(__name__, static_url_path='/static')
+
+app = Flask(__name__)
 app.secret_key = os.urandom(13)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~STYLES-FILES~~~~~~~~~~~~~~~~~~~~~~~>
@@ -67,10 +65,10 @@ def openBase64StringFromFile(_path, _id):
 
 @app.route('/', methods=['GET'])
 def Index():
-	if session.get('url_id') is not None:
-		if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
-			os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
-	return render_template('startPage.html')
+    if session.get('url_id') is not None:
+        if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
+            os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
+    return render_template('startPage.html')
 
 
 @app.route('/upload', methods=['POST'])
@@ -425,6 +423,7 @@ def generalError():
     "window.location.href='" + START_URL + "';"
     "}"
     "</script>")
+
 
 
 if __name__ == '__main__':
