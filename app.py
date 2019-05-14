@@ -22,9 +22,9 @@ import imageResize2
 
 PATH = Path(__file__).parent
 START_URL = 'https://gexvoquart.onrender.com'
-PATH_TO_BASE64_TXT_FOLDER = PATH/static/base64strings/)
-PATH_TO_STYLE_FILES = PATH/static/styleModels/)
-PATH_TO_SCALE_FILE = PATH/static/upscaleModel/)
+PATH_TO_BASE64_TXT_FOLDER = PATH/'static'/'base64strings'/)
+PATH_TO_STYLE_FILES = PATH/'static'/'styleModels'/)
+PATH_TO_SCALE_FILE = PATH/'static'/'upscaleModel'/)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 app = Quart(__name__)
