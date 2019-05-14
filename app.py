@@ -1,3 +1,6 @@
+#https://github.com/erm/asgi-examples
+#https://github.com/pgjones/quart/blob/master/docs/deployment.rst
+
 import os
 import sys
 from flask import Flask, request, jsonify, session, render_template, redirect, url_for
