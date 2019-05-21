@@ -63,7 +63,7 @@ def openBase64StringFromFile(_path, _id):
                 return line[7:]
             
 async def myTime(_time):
-    await time.sleep(_time)
+    time.sleep(_time)
     return 1
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
