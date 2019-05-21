@@ -1,6 +1,9 @@
 #https://github.com/erm/asgi-examples
 #https://github.com/pgjones/quart/blob/master/docs/deployment.rst
 
+# https://medium.com/@grzegorzolechwierowicz/long-computations-over-rest-http-in-python-4569b1187e80
+# https://pgjones.gitlab.io/quart/background_tasks.html
+
 import os
 import sys
 from pathlib import Path
@@ -65,6 +68,9 @@ def openBase64StringFromFile(_path, _id):
 async def myTime(_time):
     time.sleep(_time)
     return 1
+
+async def cpu_background_task():
+    time.sleep(20)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
@@ -203,10 +209,10 @@ async def ShowPic():
                 selectedStyle = (await request.form)['stylize']
                 if selectedStyle == 'mosaic':
                     downloadFileMosaic()
-                    img = await myTime(15)
+                    img = asyncio.get_running_loop().run_in_executor(None, cpu_background_task())
                 elif selectedStyle == 'churchWindow':
                     downloadFileChurchwindow()
-                    img = await myTime(15)
+                    img = asyncio.get_running_loop().run_in_executor(None, cpu_background_task())
                 else:
                     return await redirect(url_for('style_error_nostyle'))
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
