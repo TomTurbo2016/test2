@@ -71,7 +71,7 @@ async def myTime(_time):
     return 1
 
 async def cpu_background_task():
-    time.sleep(20)
+    time.sleep(60)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
