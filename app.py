@@ -12,6 +12,7 @@ import requests
 import stylize2
 import upscale2
 import imageResize2
+import time
 #import watermark
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
@@ -19,12 +20,7 @@ START_URL = 'https://gexvoquart.onrender.com'
 PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
-
-#PATH = Path(__file__).parent
-#START_URL = 'https://gexvoquart.onrender.com'
-#PATH_TO_BASE64_TXT_FOLDER = PATH/'static'/'base64strings'/)
-#PATH_TO_STYLE_FILES = PATH/'static'/'styleModels'/)
-#PATH_TO_SCALE_FILE = PATH/'static'/'upscaleModel'/)
+BASE64PIC = 'ODOREQB/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAATABMDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAcK/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ak+0QIOAAAAAAAA//2Q=='
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 app = Quart(__name__)
@@ -65,30 +61,35 @@ def openBase64StringFromFile(_path, _id):
         for i, line in enumerate(file, start=0):
             if line[:7] == _id:
                 return line[7:]
+            
+async def myTime(_time):
+    await time.sllep(_time)
+    return 1
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
 
 @app.route('/', methods=['GET'])
-def Index():
+async def Index():
     if session.get('url_id') is not None:
         if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
             os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
-    return render_template('startPage.html')
+    return await render_template('startPage.html')
 
 
 @app.route('/upload', methods=['POST'])
-def UploadImage():
+async def UploadImage():
     if request.method == "POST":
         try:
-            data_url = str(request.get_data().decode('utf-8'))
+            data_url = await request.get_data()
+            data_url = str(data_url.decode('utf-8'))
             data_url_trimmed = data_url[6:-2]
             id_url = data_url_trimmed[len(data_url_trimmed)-6:];
-            b64_url = data_url_trimmed[:-6]; #png-Image!!!
+            b64_url = data_url_trimmed[:-6]; #png-Image!!!          
             ## Create txt file for user:
             if not os.path.exists(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt'):
                 f = open(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', 'x')
-                f.close()
+                f.close()       
             ## Save uploaded pic to txt file:
             prefix = 'O' #Original
             saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', prefix + id_url + b64_url)
@@ -104,7 +105,7 @@ def UploadImage():
 
 
 @app.route('/showPic', methods=['GET', 'POST'])
-def ShowPic():
+async def ShowPic():
     if request.method == 'GET':
         url_id = request.args.get('id')
         if url_id is not None:
@@ -113,7 +114,7 @@ def ShowPic():
             session['url_id'] = url_id
             del prefix
             del url_id
-            return("<!DOCTYPE html>"
+            return ("<!DOCTYPE html>"
                     "<html lang='en'>"
                         "<head>"
                             "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
@@ -188,10 +189,10 @@ def ShowPic():
                         "</body>"
                     "</html>")
         else:
-            return render_template('startPage.html')
+            return await render_template('startPage.html')
     else:
         if request.method == 'POST':
-            doStyle = request.form.get('doStyle','')
+            doStyle = (await request.form).get('doStyle','')
             if doStyle == '1':
                 prefix = 'O' #Original
                 url_id = str(session['url_id'])
@@ -199,29 +200,20 @@ def ShowPic():
                 ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
                 ioFile.seek(0)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-                selectedStyle = request.form['stylize']
+                selectedStyle = (await request.form)['stylize']
                 if selectedStyle == 'mosaic':
                     downloadFileMosaic()
-                    img = stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
+                    img = await myTime(15)
                 elif selectedStyle == 'churchWindow':
                     downloadFileChurchwindow()
-                    img = stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
+                    img = await myTime(15)
                 else:
-                    return redirect(url_for('style_error_nostyle'))
+                    return await redirect(url_for('style_error_nostyle'))
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
                 downloadFile2xSize()
-                img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
-                img = imageResize2.main2(img) #--> 1/3 downscale
-                img = Image.fromarray(img)#.astype("uint8")
-                rawBytes = BytesIO()
-                img.save(rawBytes, "JPEG")
-                rawBytes.seek(0)
-                img = base64.b64encode(rawBytes.read()).decode("utf-8")
-                del prefix
-                del url_id
-                del ioFile
-                del rawBytes
-                return("<!DOCTYPE html>"
+                img = await myTime(5)
+                img = BASE64PIC
+                return ("<!DOCTYPE html>"
                         "<html lang='en'>"
                         "<head>"
                             "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
@@ -301,7 +293,7 @@ def ShowPic():
                     img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
                     del url_id
                     del prefix
-                    return("<!DOCTYPE html>"
+                    return ("<!DOCTYPE html>"
                             "<html lang='en'>"
                                 "<head>"
                                     "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
