@@ -65,15 +65,15 @@ async def cpu_background_task(selectedStyle, ioFile, url_id):
 	if selectedStyle == 'mosaic':
 		if not os.path.exists(PATH_TO_STYLE_FILES + 'mosaic.pth'):
 			downloadFileMosaic()
-		img = await stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
+		img = stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
 	elif selectedStyle == 'churchWindow':
 		if not os.path.exists(PATH_TO_STYLE_FILES + 'churchWindow.pth'):
 			downloadFileChurchwindow()
-		img = await stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
+		img = stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 	if not os.path.exists(PATH_TO_STYLE_FILES + '2xSize.pth'):
 		downloadFile2xSize()
-	img = await upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
+	img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
 	img = imageResize2.main2(img) #--> 1/3 downscale
 	img = Image.fromarray(img)#.astype("uint8")
 	rawBytes = BytesIO()
