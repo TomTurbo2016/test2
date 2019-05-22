@@ -237,7 +237,7 @@ async def ShowPic():
                                         "</small>"
                                     "</h4>"
                                     "<hr>"
-                                    "<p><h2><a href='"+ START_URL + prefix + url_id +"'>Styl-Pic</a></h2></p>"
+                                    "<p><h2><a href='"+ START_URL + prefix + url_id +"'>Style-Pic</a></h2></p>"
                                     "<hr>"
                                     "<table>"
                                         "<tr>"
