@@ -26,39 +26,39 @@ app.secret_key = os.urandom(13)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~STYLES-FILES~~~~~~~~~~~~~~~~~~~~~~~>
 def downloadFileMosaic():
-    url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
-    destination = PATH_TO_STYLE_FILES + 'mosaic.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
+	url = 'https://drive.google.com/uc?export=download&id=1vkb6LgfJZwX_SoXUdHVnP2y9NcnAzb2K'
+	destination = PATH_TO_STYLE_FILES + 'mosaic.pth'
+	r = requests.get(url)
+	with open(destination, 'wb') as f:
+		f.write(r.content)
 
 def downloadFileChurchwindow():
-    url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'
-    destination = PATH_TO_STYLE_FILES + 'churchWindow.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
+	url = 'https://drive.google.com/uc?export=download&id=1CqdfpXC5NPYS3VUcySweEVio6MwkU0mu'
+	destination = PATH_TO_STYLE_FILES + 'churchWindow.pth'
+	r = requests.get(url)
+	with open(destination, 'wb') as f:
+		f.write(r.content)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SCALE-FILE~~~~~~~~~~~~~~~~~~~~~~~~~>
 def downloadFile2xSize():
-    url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'
-    destination = PATH_TO_SCALE_FILE + '2xSize.pth'
-    r = requests.get(url)
-    with open(destination, 'wb') as f:
-        f.write(r.content)
+	url = 'https://drive.google.com/uc?export=download&id=1KXG30EWad1rdjh5QPdsyCZZldZN0zRKy'
+	destination = PATH_TO_SCALE_FILE + '2xSize.pth'
+	r = requests.get(url)
+	with open(destination, 'wb') as f:
+		f.write(r.content)
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FUNCTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~>
 def saveBase64StringToFile(_path, _base64string):
-    with open(_path,'a') as f:
-        f.write('\n' + _base64string)
+	with open(_path,'a') as f:
+		f.write('\n' + _base64string)
 
 def openBase64StringFromFile(_path, _id):
-    with open(_path, 'r') as file:
-        for i, line in enumerate(file, start=0):
-            if line[:7] == _id:
-                return line[7:]
+	with open(_path, 'r') as file:
+		for i, line in enumerate(file, start=0):
+			if line[:7] == _id:
+				return line[7:]
 
 async def cpu_background_task(selectedStyle, ioFile):
 	if selectedStyle == 'mosaic':
@@ -88,50 +88,50 @@ async def cpu_background_task(selectedStyle, ioFile):
 
 @app.route('/', methods=['GET'])
 async def Index():
-    if session.get('url_id') is not None:
-        if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
-            os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
-    return await render_template('startPage.html')
+	if session.get('url_id') is not None:
+		if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
+			os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
+	return await render_template('startPage.html')
 
 
 @app.route('/upload', methods=['POST'])
 async def UploadImage():
-    if request.method == "POST":
-        try:
-            data_url = await request.get_data()
-            data_url = str(data_url.decode('utf-8'))
-            data_url_trimmed = data_url[6:-2]
-            id_url = data_url_trimmed[len(data_url_trimmed)-6:];
-            b64_url = data_url_trimmed[:-6]; #png-Image!!!          
-            ## Create txt file for user:
-            if not os.path.exists(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt'):
-                f = open(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', 'x')
-                f.close()       
-            ## Save uploaded pic to txt file:
-            prefix = 'O' #Original
-            saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', prefix + id_url + b64_url)
-            del data_url
-            del data_url_trimmed
-            del id_url
-            del b64_url
-            del prefix
-        except Exception as e:
-            print(str(e), file=sys.stderr) #output to Error-Log-File!
-            print('Error: ' + str(e))
-        return jsonify('Success')
+	if request.method == "POST":
+		try:
+			data_url = await request.get_data()
+			data_url = str(data_url.decode('utf-8'))
+			data_url_trimmed = data_url[6:-2]
+			id_url = data_url_trimmed[len(data_url_trimmed)-6:];
+			b64_url = data_url_trimmed[:-6]; #png-Image!!!          
+			## Create txt file for user:
+			if not os.path.exists(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt'):
+				f = open(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', 'x')
+				f.close()       
+			## Save uploaded pic to txt file:
+			prefix = 'O' #Original
+			saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + id_url + '.txt', prefix + id_url + b64_url)
+			del data_url
+			del data_url_trimmed
+			del id_url
+			del b64_url
+			del prefix
+		except Exception as e:
+			print(str(e), file=sys.stderr) #output to Error-Log-File!
+			print('Error: ' + str(e))
+		return jsonify('Success')
 
 
 @app.route('/showPic', methods=['GET', 'POST'])
 async def ShowPic():
-    if request.method == 'GET':
-        url_id = request.args.get('id')
-        if url_id is not None:
-            prefix = 'O' #Original
-            img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
-            session['url_id'] = url_id
-            del prefix
-            del url_id
-            return ("<!DOCTYPE html>"
+	if request.method == 'GET':
+		url_id = request.args.get('id')
+		if url_id is not None:
+			prefix = 'O' #Original
+			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+			session['url_id'] = url_id
+			del prefix
+			del url_id
+			return ("<!DOCTYPE html>"
                     "<html lang='en'>"
                         "<head>"
                             "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
@@ -205,20 +205,20 @@ async def ShowPic():
                             "<p style='color:white'>.</p>"
                         "</body>"
                     "</html>")
-        else:
-            return await render_template('startPage.html')
-    else:
-        if request.method == 'POST':
-            doStyle = (await request.form).get('doStyle','')
-            if doStyle == '1':
-                prefix = 'O' #Original
-                url_id = str(session['url_id'])
-                ioFile = BytesIO()
-                ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
-                ioFile.seek(0)
-                selectedStyle = (await request.form)['stylize']
-		asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile))
-                return ("<!DOCTYPE html>"
+		else:
+			return await render_template('startPage.html')
+	else:
+		if request.method == 'POST':
+			doStyle = (await request.form).get('doStyle','')
+			if doStyle == '1':
+				prefix = 'O' #Original
+				url_id = str(session['url_id'])
+				ioFile = BytesIO()
+				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
+				ioFile.seek(0)
+				selectedStyle = (await request.form)['stylize']
+				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile))
+				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
                         "<head>"
                             "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
@@ -290,14 +290,14 @@ async def ShowPic():
                             "<p style='color:white'>.</p>"
                         "</body>"
                     "</html>")
-            else:
-                if doStyle == '2':
-                    url_id = str(session['url_id'])
-                    prefix = 'O' #Original
-                    img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
-                    del url_id
-                    del prefix
-                    return ("<!DOCTYPE html>"
+			else:
+				if doStyle == '2':
+					url_id = str(session['url_id'])
+					prefix = 'O' #Original
+					img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+					del url_id
+					del prefix
+					return ("<!DOCTYPE html>"
                             "<html lang='en'>"
                                 "<head>"
                                     "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
@@ -376,57 +376,57 @@ async def ShowPic():
 ##Error-Messages:
 @app.route('/FILE_UPLOAD_ERROR_NoFileSelected')
 def file_upload_error_nofile():
-    return (
-    "<!doctype html>"
-    "<title>Upload File ERROR - No File selected</title>"
-    "<h1>No file selected</h1>"
-    "<button onclick='goBack()'>Go Back</button>"
-    "<script>"
-    "function goBack() {"
-    "window.location.href='" + START_URL + "';"
-    "}"
-    "</script>")
+	return (
+	"<!doctype html>"
+	"<title>Upload File ERROR - No File selected</title>"
+	"<h1>No file selected</h1>"
+	"<button onclick='goBack()'>Go Back</button>"
+	"<script>"
+	"function goBack() {"
+	"window.location.href='" + START_URL + "';"
+	"}"
+	"</script>")
 
 @app.route('/STYLE_ERROR_NoStyleSelected')
 def style_error_nostyle():
-    return (
-    "<!doctype html>"
-    "<title>Style ERROR - No Style selected</title>"
-    "<h1>No style selected</h1>"
-    "<button onclick='goBack()'>Go Back</button>"
-    "<script>"
-    "function goBack() {"
-    "window.location.href='" + START_URL + "';"
-    "}"
-    "</script>")
+	return (
+	"<!doctype html>"
+	"<title>Style ERROR - No Style selected</title>"
+	"<h1>No style selected</h1>"
+	"<button onclick='goBack()'>Go Back</button>"
+	"<script>"
+	"function goBack() {"
+	"window.location.href='" + START_URL + "';"
+	"}"
+	"</script>")
 
 @app.route('/FILE_UPLOAD_ERROR_NoJPGformat')
 def file_upload_error_nojpg():
-    return (
-    "<!doctype html>"
-    "<title>Upload File ERROR - No jpg Format</title>"
-    "<h1>File needs to end with .jpg</h1>"
-    "<button onclick='goBack()'>Go Back</button>"
-    "<script>"
-    "function goBack() {"
-    "window.location.href='" + START_URL + "';"
-    "}"
-    "</script>")
+	return (
+	"<!doctype html>"
+	"<title>Upload File ERROR - No jpg Format</title>"
+	"<h1>File needs to end with .jpg</h1>"
+	"<button onclick='goBack()'>Go Back</button>"
+	"<script>"
+	"function goBack() {"
+	"window.location.href='" + START_URL + "';"
+	"}"
+	"</script>")
 
 @app.route('/GENERALERROR')
 def generalError():
-    return (
-    "<!doctype html>"
-    "<title>ERROR</title>"
-    "<h1>Something went wrong!</h1>"
-    "<button onclick='goBack()'>Go Back</button>"
-    "<script>"
-    "function goBack() {"
-    "window.location.href='" + START_URL + "';"
-    "}"
-    "</script>")
+	return (
+	"<!doctype html>"
+	"<title>ERROR</title>"
+	"<h1>Something went wrong!</h1>"
+	"<button onclick='goBack()'>Go Back</button>"
+	"<script>"
+	"function goBack() {"
+	"window.location.href='" + START_URL + "';"
+	"}"
+	"</script>")
 
 
 
 if __name__ == '__main__':
-    app.run()
+	app.run()
