@@ -312,7 +312,7 @@ async def ShowPic():
                                         "<div class='col-sm-9'>"
                                             "<h4>"
                                                 "<small>"
-                                                    "Style-Transfer by gexvo"
+                                                    "Style-Transfer by gexvo - HALLO"
                                                 "</small>"
                                             "</h4>"
                                             "<h4>"
