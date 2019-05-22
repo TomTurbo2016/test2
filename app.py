@@ -62,7 +62,6 @@ def openBase64StringFromFile(_path, _id):
 				return line[7:]
 
 def cpu_background_task(selectedStyle, ioFile, url_id):
-	x = 1 / 0
 	if selectedStyle == 'mosaic':
 		if not os.path.exists(PATH_TO_STYLE_FILES + 'mosaic.pth'):
 			downloadFileMosaic()
@@ -214,17 +213,12 @@ async def ShowPic():
 		if request.method == 'POST':
 			doStyle = (await request.form).get('doStyle','')
 			if doStyle == '1':
-				
-				#async def create_job(selectedStyle, ioFile, url_id):
-				#	await asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
-					
 				prefix = 'O' #Original
 				url_id = str(session['url_id'])
 				ioFile = BytesIO()
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
-				#create_job(selectedStyle, ioFile, url_id)
 				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
