@@ -12,11 +12,10 @@ import requests
 import stylize2
 import upscale2
 import imageResize2
-import asyncio
 #import watermark
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-START_URL = 'https://gexvoquart.onrender.com'
+START_URL = 'https://gexvoquart.onrender.com/'
 PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
@@ -146,7 +145,7 @@ async def ShowPic():
                                 "<div class='col-sm-9'>"
                                     "<h4>"
                                         "<small>"
-                                            "Style-Transfer by gexvo 1"
+                                            "Style-Transfer by gexvo"
                                         "</small>"
                                     "</h4>"
                                     "<h4>"
@@ -219,6 +218,7 @@ async def ShowPic():
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
 				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile))
+				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
                         "<head>"
@@ -233,16 +233,11 @@ async def ShowPic():
                                 "<div class='col-sm-9'>"
                                     "<h4>"
                                         "<small>"
-                                            "Style-Transfer by gexvo 2"
+                                            "Style-Transfer by gexvo"
                                         "</small>"
                                     "</h4>"
-                                    "<p id='loadingText1' style='display:none; margin-left:2em;'>"
-                                        "<b>"
-                                            "Your pictue is being enlarged. Please wait!"
-                                        "</b>"
-                                    "</p>"
                                     "<hr>"
-                                    "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
+                                    "<p><h2><a href='"+ START_URL + prefix + url_id +"'>Styl-Pic</a></h2></p>"
                                     "<hr>"
                                     "<table>"
                                         "<tr>"
@@ -263,8 +258,8 @@ async def ShowPic():
                                                 "id='deleteB' "
                                                 "onclick='goBack2Start()' "
                                                 "style='height:50px; font-size:20px' "
-                                                    "class='btn btn-danger'>"
-                                                        "Delete picture"
+                                                    "class='btn btn-warning'>"
+                                                        "Upload new Picture"
                                                 "</button>"
                                             "<th>"
                                         "<tr>"
@@ -312,7 +307,7 @@ async def ShowPic():
                                         "<div class='col-sm-9'>"
                                             "<h4>"
                                                 "<small>"
-                                                    "Style-Transfer by gexvo 3"
+                                                    "Style-Transfer by gexvo"
                                                 "</small>"
                                             "</h4>"
                                             "<h4>"
@@ -372,6 +367,14 @@ async def ShowPic():
                                     "<p style='color:white'>.</p>"
                                 "</body>"
                             "</html>")
+
+
+@app.route('/showStyledPic/<picID>', methods=['GET'])
+async def ShowStylePic(picID):
+	if request.method == 'GET':
+		
+		img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+		return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
 
 
 ##Error-Messages:
