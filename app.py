@@ -379,8 +379,7 @@ async def ShowStylePic(picID):
 			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + fileName + '.txt', picID)
 			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
 		except Exception as e:
-			return fileName
-			#return str(e) + " --> " + type(fileName)
+			return str(e) + " --> " + fileName
 
 
 ##Error-Messages:
