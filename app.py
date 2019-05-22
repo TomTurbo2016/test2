@@ -374,7 +374,7 @@ async def ShowPic():
 async def ShowStylePic(picID):
 	if request.method == 'GET':
 		try:
-			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + picID + '.txt', 'S' + picID)
+			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + picID[1:] + '.txt', picID)
 			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
 		except Exception as e:
 			return str(e)
