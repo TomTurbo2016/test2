@@ -374,10 +374,10 @@ async def ShowPic():
 async def ShowStylePic(picID):
 	if request.method == 'GET':
 		try:
-			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + picID + '.txt', 'S' + picID)
 			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
 		except Exception as e:
-			return "Picture not done yet!"
+			return str(e)
 
 
 ##Error-Messages:
