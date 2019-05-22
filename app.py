@@ -1,9 +1,6 @@
 #https://github.com/erm/asgi-examples
 #https://github.com/pgjones/quart/blob/master/docs/deployment.rst
 
-# https://medium.com/@grzegorzolechwierowicz/long-computations-over-rest-http-in-python-4569b1187e80
-# https://pgjones.gitlab.io/quart/background_tasks.html
-
 import os
 import sys
 from pathlib import Path
@@ -15,16 +12,13 @@ import requests
 import stylize2
 import upscale2
 import imageResize2
-import time
-import asyncio
 #import watermark
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-START_URL = 'https://testquart.onrender.com'
+START_URL = 'https://gexvoquart.onrender.com'
 PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
-BASE64PIC = 'ODOREQB/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAATABMDAREAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAcK/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8Ak+0QIOAAAAAAAA//2Q=='
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 app = Quart(__name__)
@@ -65,13 +59,29 @@ def openBase64StringFromFile(_path, _id):
         for i, line in enumerate(file, start=0):
             if line[:7] == _id:
                 return line[7:]
-            
-async def myTime(_time):
-    time.sleep(_time)
-    return 1
 
-async def cpu_background_task():
-    time.sleep(60)
+async def cpu_background_task(selectedStyle, ioFile):
+	if selectedStyle == 'mosaic':
+		if not os.path.exists(PATH_TO_STYLE_FILES + 'mosaic.pth'):
+			downloadFileMosaic()
+		img = await stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
+	elif selectedStyle == 'churchWindow':
+		if not os.path.exists(PATH_TO_STYLE_FILES + 'churchWindow.pth'):
+			downloadFileChurchwindow()
+		img = await stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
+####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
+	if not os.path.exists(PATH_TO_STYLE_FILES + '2xSize.pth'):
+		downloadFile2xSize()
+	img = await upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
+	img = imageResize2.main2(img) #--> 1/3 downscale
+	img = Image.fromarray(img)#.astype("uint8")
+	rawBytes = BytesIO()
+	img.save(rawBytes, "JPEG")
+	rawBytes.seek(0)
+	img = base64.b64encode(rawBytes.read()).decode("utf-8")
+	prefix = 'S' #Style
+	saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
+
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
 
@@ -206,20 +216,8 @@ async def ShowPic():
                 ioFile = BytesIO()
                 ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
                 ioFile.seek(0)
-####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~STYLES~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
                 selectedStyle = (await request.form)['stylize']
-                if selectedStyle == 'mosaic':
-                    downloadFileMosaic()
-                    img = asyncio.get_running_loop().run_in_executor(None, cpu_background_task())
-                elif selectedStyle == 'churchWindow':
-                    downloadFileChurchwindow()
-                    img = asyncio.get_running_loop().run_in_executor(None, cpu_background_task())
-                else:
-                    return await redirect(url_for('style_error_nostyle'))
-####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
-                downloadFile2xSize()
-                img = await myTime(5)
-                img = BASE64PIC
+				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile))
                 return ("<!DOCTYPE html>"
                         "<html lang='en'>"
                         "<head>"
@@ -243,7 +241,6 @@ async def ShowPic():
                                         "</b>"
                                     "</p>"
                                     "<hr>"
-                                    "<img id='inputPic' src='data:image/jpg;base64," + img + "' hspace='20'/>"
                                     "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
                                     "<hr>"
                                     "<table>"
