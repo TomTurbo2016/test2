@@ -63,6 +63,7 @@ def openBase64StringFromFile(_path, _id):
 			if line[:7] == _id:
 				return line[7:]
 
+# https://realpython.com/async-io-python/
 async def cpu_background_task(selectedStyle, ioFile, url_id,):
 	time.sleep(10)
 	# if selectedStyle == 'mosaic':
@@ -86,7 +87,7 @@ async def cpu_background_task(selectedStyle, ioFile, url_id,):
 	# prefix = 'S' #Style
 	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
-
+# https://realpython.com/intro-to-python-threading/
 def thread_function(selectedStyle, ioFile, url_id):
 	print('---> 1', file=sys.stderr)
 	if selectedStyle == 'mosaic':
@@ -101,15 +102,15 @@ def thread_function(selectedStyle, ioFile, url_id):
 	if not os.path.exists(PATH_TO_STYLE_FILES + '2xSize.pth'):
 		downloadFile2xSize()
 	print('---> 2', file=sys.stderr)
-	img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
-	img = imageResize2.main2(img) #--> 1/3 downscale
-	img = Image.fromarray(img)#.astype("uint8")
-	rawBytes = BytesIO()
-	img.save(rawBytes, "JPEG")
-	rawBytes.seek(0)
-	img = base64.b64encode(rawBytes.read()).decode("utf-8")
-	prefix = 'S' #Style
-	saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
+	# img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
+	# img = imageResize2.main2(img) #--> 1/3 downscale
+	# img = Image.fromarray(img)#.astype("uint8")
+	# rawBytes = BytesIO()
+	# img.save(rawBytes, "JPEG")
+	# rawBytes.seek(0)
+	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
+	# prefix = 'S' #Style
+	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 	print('---> 3', file=sys.stderr)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
