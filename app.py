@@ -212,7 +212,7 @@ async def ShowPic():
 		if request.method == 'POST':
 			doStyle = (await request.form).get('doStyle','')
 			if doStyle == '1':
-				prefix = 'O' #Original
+				prefix = 'S' #Original
 				url_id = str(session['url_id'])
 				ioFile = BytesIO()
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
