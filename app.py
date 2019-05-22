@@ -62,6 +62,7 @@ def openBase64StringFromFile(_path, _id):
 				return line[7:]
 
 async def cpu_background_task(selectedStyle, ioFile, url_id):
+	x = 1 / 0
 	if selectedStyle == 'mosaic':
 		if not os.path.exists(PATH_TO_STYLE_FILES + 'mosaic.pth'):
 			downloadFileMosaic()
