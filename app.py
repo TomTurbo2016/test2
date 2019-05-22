@@ -81,7 +81,6 @@ async def cpu_background_task(selectedStyle, ioFile, url_id):
 	rawBytes.seek(0)
 	img = base64.b64encode(rawBytes.read()).decode("utf-8")
 	prefix = 'S' #Style
-	x = 5 / 0
 	saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
@@ -219,7 +218,7 @@ async def ShowPic():
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
-				asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
+				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
