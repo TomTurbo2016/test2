@@ -219,7 +219,7 @@ async def ShowPic():
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
-				asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
+				await asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
