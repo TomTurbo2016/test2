@@ -83,7 +83,7 @@ async def cpu_background_task(selectedStyle, ioFile, url_id):
 	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
 	# prefix = 'S' #Style
 	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
-	await time.sleep(10)
+	time.sleep(10)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
