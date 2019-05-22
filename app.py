@@ -373,9 +373,11 @@ async def ShowPic():
 @app.route('/showStyledPic/<picID>', methods=['GET'])
 async def ShowStylePic(picID):
 	if request.method == 'GET':
-		
-		img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
-		return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
+		try:
+			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
+		except Exception as e:
+			return "Picture not done yet!"
 
 
 ##Error-Messages:
