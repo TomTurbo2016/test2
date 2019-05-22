@@ -215,7 +215,7 @@ async def ShowPic():
 			if doStyle == '1':
 				
 				async def create_job(selectedStyle, ioFile, url_id):
-					asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
+					await asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
 					
 				prefix = 'O' #Original
 				url_id = str(session['url_id'])
