@@ -81,6 +81,7 @@ async def cpu_background_task(selectedStyle, ioFile, url_id):
 	rawBytes.seek(0)
 	img = base64.b64encode(rawBytes.read()).decode("utf-8")
 	prefix = 'S' #Style
+	x = 5 / 0
 	saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
@@ -212,7 +213,7 @@ async def ShowPic():
 		if request.method == 'POST':
 			doStyle = (await request.form).get('doStyle','')
 			if doStyle == '1':
-				prefix = 'S' #Original
+				prefix = 'O' #Original
 				url_id = str(session['url_id'])
 				ioFile = BytesIO()
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
