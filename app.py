@@ -87,26 +87,6 @@ async def cpu_background_task(selectedStyle, ioFile, url_id,):
 
 
 def thread_function(selectedStyle, ioFile, url_id):
-	# if selectedStyle == 'mosaic':
-		# if not os.path.exists(PATH_TO_STYLE_FILES + 'mosaic.pth'):
-			# downloadFileMosaic()
-		# img = stylize2.main(ioFile, 'mosaic', PATH_TO_STYLE_FILES)
-	# elif selectedStyle == 'churchWindow':
-		# if not os.path.exists(PATH_TO_STYLE_FILES + 'churchWindow.pth'):
-			# downloadFileChurchwindow()
-		# img = stylize2.main(ioFile, 'churchWindow', PATH_TO_STYLE_FILES)
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
-	# if not os.path.exists(PATH_TO_STYLE_FILES + '2xSize.pth'):
-		# downloadFile2xSize()
-	# img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
-	# img = imageResize2.main2(img) #--> 1/3 downscale
-	# img = Image.fromarray(img)#.astype("uint8")
-	# rawBytes = BytesIO()
-	# img.save(rawBytes, "JPEG")
-	# rawBytes.seek(0)
-	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
-	# prefix = 'S' #Style
-	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 	time.sleep(10)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
