@@ -226,7 +226,7 @@ async def ShowPic():
 				selectedStyle = (await request.form)['stylize']
 				
 				#asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
-				x = threading.Thread(target=thread_function, args=(selectedStyle, ioFile, url_id))
+				x = threading.Thread(target=thread_function, args=(selectedStyle,))
 				x.start()
 				
 				prefix = 'S' #Style
