@@ -13,6 +13,7 @@ import stylize2
 import upscale2
 import imageResize2
 import asyncio
+import threading
 import time
 #import watermark
 
@@ -83,6 +84,9 @@ async def cpu_background_task(selectedStyle, ioFile, url_id):
 	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
 	# prefix = 'S' #Style
 	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
+	time.sleep(10)
+
+def thread_function(name):
 	time.sleep(10)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
@@ -220,7 +224,11 @@ async def ShowPic():
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
-				asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
+				
+				#asyncio.get_running_loop().run_in_executor(None, await cpu_background_task(selectedStyle, ioFile, url_id))
+				x = threading.Thread(target=thread_function, args=(1,))
+				x.start()
+				
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
