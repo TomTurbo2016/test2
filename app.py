@@ -225,7 +225,7 @@ async def ShowPic():
 				ioFile.seek(0)
 				selectedStyle = (await request.form)['stylize']
 				#create_job(selectedStyle, ioFile, url_id)
-				await asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
+				asyncio.get_running_loop().run_in_executor(None, cpu_background_task(selectedStyle, ioFile, url_id))
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
