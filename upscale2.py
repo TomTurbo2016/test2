@@ -3,7 +3,7 @@ import torch
 from PIL import Image
 from torchvision.transforms import ToTensor
 import numpy as np
-import asyncio
+#import asyncio
 
 
 async def doWork(_img, _pathModel):
@@ -25,12 +25,12 @@ async def doWork(_img, _pathModel):
 
 
 def main(_img, _pathModel):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(asyncio.new_event_loop())
-    loop = asyncio.get_event_loop()
-    img_result = loop.run_until_complete(doWork(_img, _pathModel))
-    loop.close()
-    return img_result
+    #loop = asyncio.new_event_loop()
+    #asyncio.set_event_loop(asyncio.new_event_loop())
+    #loop = asyncio.get_event_loop()
+    #img_result = loop.run_until_complete(doWork(_img, _pathModel))
+    #loop.close()
+    return doWork(_img, _pathModel) #img_result
 
 
 if __name__ == "__main__":
