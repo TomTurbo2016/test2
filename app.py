@@ -86,7 +86,7 @@ async def cpu_background_task(selectedStyle, ioFile, url_id,):
 	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
 
-def thread_function(selectedStyle, ioFile, url_id):
+def thread_function(selectedStyle):
 	time.sleep(10)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
