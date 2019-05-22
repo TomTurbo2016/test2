@@ -16,7 +16,7 @@ import asyncio
 #import watermark
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~To-Be-Edited~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-START_URL = 'https://gexvoquart.onrender.com/'
+START_URL = 'https://testquart.onrender.com/'
 PATH_TO_BASE64_TXT_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/base64strings/')
 PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/styleModels/')
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
@@ -238,7 +238,7 @@ async def ShowPic():
                                         "</small>"
                                     "</h4>"
                                     "<hr>"
-                                    "<p><h2><a href='"+ START_URL + prefix + url_id +"'>Style-Pic</a></h2></p>"
+                                    "<p><h2><a href='"+ START_URL + "showStyledPic/" + prefix + url_id +"'>Style-Pic</a></h2></p>"
                                     "<hr>"
                                     "<table>"
                                         "<tr>"
