@@ -4,8 +4,9 @@ import re
 import torch
 from PIL import Image
 from torchvision import transforms
-import asyncio
 import io
+#import asyncio
+import time
 
 
 class TransformerNet(torch.nn.Module):
@@ -148,12 +149,13 @@ async def doWork(byte_img, nameStyle, pathModel):
 
 
 def main(byte_img, nameStyle, pathModel):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(asyncio.new_event_loop())
-    loop = asyncio.get_event_loop()
-    img_result = loop.run_until_complete(doWork(byte_img, nameStyle, pathModel))
-    loop.close()
-    return img_result
+    #loop = asyncio.new_event_loop()
+    #asyncio.set_event_loop(asyncio.new_event_loop())
+    #loop = asyncio.get_event_loop()
+    #img_result = loop.run_until_complete(doWork(byte_img, nameStyle, pathModel))
+    #loop.close()   	
+    time.sleep(20)
+    return doWork(byte_img, nameStyle, pathModel) #img_result
 
 
 if __name__ == "__main__":
