@@ -373,8 +373,8 @@ async def ShowPic():
 @app.route('/showStyledPic/<picID>', methods=['GET'])
 async def ShowStylePic(picID):
 	if request.method == 'GET':
-		fileName = str(picID)
-		fileName = fileName[1:]
+		picID = str(picID.decode('utf-8'))
+		fileName = picID[1:]
 		try:
 			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + fileName + '.txt', picID)
 			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
