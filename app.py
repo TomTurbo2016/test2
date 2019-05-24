@@ -85,7 +85,7 @@ async def cpu_background_task(selectedStyle, ioFile, url_id,):
 	# img.save(rawBytes, "JPEG")
 	# rawBytes.seek(0)
 	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
-	# prefix = 'S' #Style
+	prefix = 'S' #Style
 	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
 # https://realpython.com/intro-to-python-threading/
@@ -101,15 +101,15 @@ def thread_function(selectedStyle, ioFile, url_id):
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 	if not os.path.exists(PATH_TO_STYLE_FILES + '2xSize.pth'):
 		downloadFile2xSize()
-	img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
-	img = imageResize2.main2(img) #--> 1/3 downscale
-	img = Image.fromarray(img)#.astype("uint8")
-	rawBytes = BytesIO()
-	img.save(rawBytes, "JPEG")
-	rawBytes.seek(0)
-	img = base64.b64encode(rawBytes.read()).decode("utf-8")
-	prefix = 'S' #Style
-	saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
+	# img = upscale2.main(img, PATH_TO_SCALE_FILE + '2xSize.pth')
+	# img = imageResize2.main2(img) #--> 1/3 downscale
+	# img = Image.fromarray(img)#.astype("uint8")
+	# rawBytes = BytesIO()
+	# img.save(rawBytes, "JPEG")
+	# rawBytes.seek(0)
+	# img = base64.b64encode(rawBytes.read()).decode("utf-8")
+	# prefix = 'S' #Style
+	# saveBase64StringToFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id + img)
 
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
