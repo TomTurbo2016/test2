@@ -6,7 +6,7 @@ import numpy as np
 #import asyncio
 
 
-async def doWork(_img, _pathModel):
+def doWork(_img, _pathModel):
     img = _img.convert('YCbCr')
     y, cb, cr = img.split()
     model = torch.load(_pathModel)
