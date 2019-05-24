@@ -1,6 +1,7 @@
 numpy
-https://download.pytorch.org/whl/cpu/torch-1.1.0-cp37-cp37m-linux_x86_64.whl
-https://download.pytorch.org/whl/cpu/torchvision-0.3.0-cp37-cp37m-linux_x86_64.whl
+pillow
+torch==1.0.1 -f https://download.pytorch.org/whl/cpu/stable
+torchvision==0.1.8
 uuid
 asyncio
 requests
