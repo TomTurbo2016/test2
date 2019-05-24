@@ -154,7 +154,6 @@ def main(byte_img, nameStyle, pathModel):
     #loop = asyncio.get_event_loop()
     #img_result = loop.run_until_complete(doWork(byte_img, nameStyle, pathModel))
     #loop.close()   	
-    time.sleep(20)
     return doWork(byte_img, nameStyle, pathModel) #img_result
 
 
