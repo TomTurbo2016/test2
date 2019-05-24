@@ -144,7 +144,7 @@ def stylize(imageBytes, _model):
     return save_image(output[0])
 
 
-async def doWork(byte_img, nameStyle, pathModel):
+def doWork(byte_img, nameStyle, pathModel):
     return stylize(byte_img, pathModel + nameStyle + '.pth')
 
 
