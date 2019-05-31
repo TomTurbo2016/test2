@@ -410,7 +410,16 @@ async def ShowStylePic(picID):
 			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + fileName + '.txt', picID)
 			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
 		except Exception as e:
-			return str(e)
+			#return str(e)
+			return ("<!doctype html>"
+				"<title>Waiting transformation</title>"
+				"<h1>Transformation not done yet!</h1>"
+				"<button onclick='goBack()'>Go Back</button>"
+				"<script>"
+				"function goBack() {"
+				"window.location.href='" + START_URL + 'showStyledPic/' + picID "';"
+				"}"
+				"</script>")
 
 
 ##Error-Messages:
