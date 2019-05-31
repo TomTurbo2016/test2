@@ -386,14 +386,31 @@ async def ShowStylePic(picID):
 		fileName = picID[1:]
 		try:
 			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + fileName + '.txt', picID)
-			return "<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
+			return ("<img id='inputPic' src='data:image/png;base64," + img + "' hspace='0'/>"
+				"<button onclick='goBack()'>Go back to start</button>"
+				"<script>"
+				"history.pushState(null, document.title, location.href);"
+                                "window.addEventListener('popstate', function (event) {"
+                                "history.pushState(null, document.title, location.href);"
+                                "});"
+				"function goBack() {"
+				"window.location.href='" + START_URL + "';"
+				"}"
+				"</script>")
+				
 		except Exception as e:
 			#return str(e)
 			return ("<!doctype html>"
-				"<title>Waiting transformation</title>"
+				"<title>Waiting for transformation</title>"
 				"<h1>Transformation not done yet!</h1>"
-				"<button onclick='goBack()'>Go Back</button>"
+				"<h1>It takes a few more seconds.</h1>"
+				"<h1>Just reload the page after a while.</h1>"
+				"<button onclick='goBack()'>Reload Page</button>"
 				"<script>"
+				"history.pushState(null, document.title, location.href);"
+                                "window.addEventListener('popstate', function (event) {"
+                                "history.pushState(null, document.title, location.href);"
+                                "});"
 				"function goBack() {"
 				"window.location.href='" + START_URL_MODIFIED + "';"
 				"}"
