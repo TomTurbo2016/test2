@@ -394,7 +394,7 @@ async def ShowStylePic(picID):
 				"<button onclick='goBack()'>Go Back</button>"
 				"<script>"
 				"function goBack() {"
-				"window.location.href='" + START_URL" + "'showStyledPic/'" + "picID "';"
+				"window.location.href='" + START_URL + "showStyledPic/" + picID "';"
 				"}"
 				"</script>")
 
