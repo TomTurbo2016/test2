@@ -382,6 +382,7 @@ async def ShowPic():
 async def ShowStylePic(picID):
 	if request.method == 'GET':
 		picID = str(picID)
+		START_URL_MODIFIED = START_URL + 'showStyledPic/' + picID
 		fileName = picID[1:]
 		try:
 			img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + fileName + '.txt', picID)
@@ -394,7 +395,7 @@ async def ShowStylePic(picID):
 				"<button onclick='goBack()'>Go Back</button>"
 				"<script>"
 				"function goBack() {"
-				"window.location.href='" + START_URL + "showStyledPic/" + picID "';"
+				"window.location.href='" + START_URL_MODIFIED + "';"
 				"}"
 				"</script>")
 
