@@ -474,6 +474,8 @@ async def ShowStylePic(picID):
 		doStyle = (await request.form).get('doStyle','')
 		if doStyle == '1':
 			picID = str(picID)[1:]
+			
+			#ToDo --> Check: Error Line 489 --> TypeError: argument should be a bytes-like object or ASCII string, not 'NoneType'
 			with open(PATH_TO_BASE64_TXT_FOLDER + picID + '.txt', 'r+') as f:
     				d = f.readlines()
     				f.seek(0)
