@@ -223,10 +223,10 @@ async def ShowPic():
 				ioFile = BytesIO()
 				ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 				ioFile.seek(0)
-				selectedStyle = (await request.form)['stylize']				
+				selectedStyle = (await request.form)['stylize']
 				thread = threading.Thread(target=thread_function, args=(selectedStyle, ioFile, url_id,))
 				thread.deamon = True;
-				thread.start()				
+				thread.start()
 				prefix = 'S' #Style
 				return ("<!DOCTYPE html>"
                         "<html lang='en'>"
@@ -378,7 +378,7 @@ async def ShowPic():
                             "</html>")
 
 
-@app.route('/showStyledPic/<picID>', methods=['GET'])
+@app.route('/showStyledPic/<picID>', methods=['GET', 'POST'])
 async def ShowStylePic(picID):
 	if request.method == 'GET':
 		picID = str(picID)
@@ -452,7 +452,7 @@ async def ShowStylePic(picID):
                             "</script>"
                             "<p style='color:white'>.</p>"
                         "</body>"
-                    "</html>")			
+                    "</html>")
 		except Exception as e:
 			#return str(e)
 			return ("<!doctype html>"
@@ -470,6 +470,167 @@ async def ShowStylePic(picID):
 				"window.location.href='" + START_URL_MODIFIED + "';"
 				"}"
 				"</script>")
+	else:
+		doStyle = (await request.form).get('doStyle','')
+		if doStyle == '1':
+			prefix = 'O' #Original
+			url_id = str(session['url_id'])
+			ioFile = BytesIO()
+			ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
+			ioFile.seek(0)
+			selectedStyle = (await request.form)['stylize']
+			thread = threading.Thread(target=thread_function, args=(selectedStyle, ioFile, url_id,))
+			thread.deamon = True;
+			thread.start()
+			prefix = 'S' #Style
+			return ("<!DOCTYPE html>"
+                        "<html lang='en'>"
+                        "<head>"
+                            "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                            "<title>Style-Transfer</title>"
+                            "<meta charset='utf-8'>"
+                            "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                            "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'>"
+                        "</head>"
+                        "<body style='background-color:white;'>"
+                            "<div class='container-fluid'>"
+                                "<div class='col-sm-9'>"
+                                    "<h4>"
+                                        "<small>"
+                                            "Style-Transfer by gexvo"
+                                        "</small>"
+                                    "</h4>"
+                                    "<hr>"
+                                    "<p><h2><a href='"+ START_URL + "showStyledPic/" + prefix + url_id +"'>Style-Pic</a></h2></p>"
+                                    "<hr>"
+                                    "<table>"
+                                        "<tr>"
+                                            "<th>"
+                                                "<form method='post' runat='server'>"
+                                                    "<input type='hidden' value='2' name='doStyle'>"
+                                                    "<button type='button' "
+                                                        "id='backB' "
+                                                        "onclick='this.form.submit();' "
+                                                        "style='height:50px; font-size:20px' "
+                                                        "class='btn btn-primary'>"
+                                                            "Select style"
+                                                    "</button>"
+                                                "</form>"
+                                            "<th>"
+                                            "<th>"
+                                                "<button type='button' "
+                                                "id='deleteB' "
+                                                "onclick='goBack2Start()' "
+                                                "style='height:50px; font-size:20px' "
+                                                    "class='btn btn-warning'>"
+                                                        "Upload new Picture"
+                                                "</button>"
+                                            "<th>"
+                                        "<tr>"
+                                    "<table>"
+                                "</div>"
+                            "</div>"
+                            "<script>"
+                                "history.pushState(null, document.title, location.href);"
+                                "window.addEventListener('popstate', function (event) {"
+                                "history.pushState(null, document.title, location.href);"
+                                "});"
+                                "function goBack2Start() {"
+                                "window.location.href='" + START_URL + "';"
+                                "}"
+                                "function hideFunction() {"
+                                "document.getElementById('backB').style.visibility = 'hidden';"
+                                "document.getElementById('deleteB').style.visibility = 'hidden';"
+                                "document.getElementById('inputPic').style.display = 'none';"
+                                "document.getElementById('loading').style.display = 'block';"
+                                "document.getElementById('loadingText1').style.display = 'block';"
+                                "document.getElementById('loadingText2').style.display = 'block';"
+                                "}"
+                            "</script>"
+                            "<p style='color:white'>.</p>"
+                        "</body>"
+                    "</html>")
+			else:
+				if doStyle == '2':
+					url_id = str(session['url_id'])
+					prefix = 'O' #Original
+					img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+					del url_id
+					del prefix
+					return ("<!DOCTYPE html>"
+                            "<html lang='en'>"
+                                "<head>"
+                                    "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
+                                    "<title>Style-Transfer</title>"
+                                    "<meta charset='utf-8'>"
+                                    "<meta name='viewport' content='width=device-width, initial-scale=1'>"
+                                    "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css'/>"
+                                "</head>"
+                                "<body style='background-color:white;'>"
+                                    "<div class='container-fluid'>"
+                                        "<div class='col-sm-9'>"
+                                            "<h4>"
+                                                "<small>"
+                                                    "Style-Transfer by gexvo"
+                                                "</small>"
+                                            "</h4>"
+                                            "<h4>"
+                                                "<form id='select1' method='post' runat='server'>"
+                                                    "<input type='hidden' value='1' name='doStyle'>"
+                                                    "<div style='width:200px;'>"
+                                                        "<select name='stylize' "
+                                                                "style='height:50px; font-size:20px; font-weight:bold; background-color:#b0e05e; color:black;' "
+                                                                "onchange='this.form.submit(); hideFunction()'>"
+                                                            "<option selected disabled>Choose style</option>"
+                                                            "<option value='mosaic'>Mosaic</option>"
+                                                            "<option value='churchWindow'>Church-Window</option>"
+                                                        "</select>"
+                                                    "</div>"
+                                                "</form>"
+                                            "</h4>"
+                                            "<p id='loadingText1' style='display:none; margin-left:2em;'>"
+                                                "<b>"
+                                                    "Your pictue is being style-transferred. Please wait!"
+                                                "</b>"
+                                            "</p>"
+                                            "<p id='loadingText2' style='color:red; display:none; margin-left:2em;'>"
+                                                "<b>"
+                                                    "This process can take about 1 minute."
+                                                "</b>"
+                                            "</p>"
+                                            "<hr>"
+                                            "<img id='inputPic' src='data:image/jpg;base64," + img + "' hspace='20'/>"
+                                            "<img id='loading' src='static/otherStuff/loading.gif' style='display:none' hspace='20'/>"
+                                            "<hr>"
+                                            "<button type='button'"
+                                                    "id='deleteB'"
+                                                    "onclick='goBack2Start()'"
+                                                    "style='height:50px; font-size:20px'"
+                                                    "class='btn btn-danger'>"
+                                                "Delete picture"
+                                            "</button>"
+                                        "</div>"
+                                    "</div>"
+                                    "<script>"
+                                        "history.pushState(null, document.title, location.href);"
+                                        "window.addEventListener('popstate', function (event) {"
+                                        "history.pushState(null, document.title, location.href);"
+                                        "});"
+                                        "function goBack2Start() {"
+                                        "window.location.href='" + START_URL + "';"
+                                        "}"
+                                        "function hideFunction() {"
+                                        "document.getElementById('select1').style.visibility = 'hidden';"
+                                        "document.getElementById('deleteB').style.visibility = 'hidden';"
+                                        "document.getElementById('inputPic').style.display = 'none';"
+                                        "document.getElementById('loading').style.display = 'block';"
+                                        "document.getElementById('loadingText1').style.display = 'block';"
+                                        "document.getElementById('loadingText2').style.display = 'block';"
+                                        "}"
+                                    "</script>"
+                                    "<p style='color:white'>.</p>"
+                                "</body>"
+                            "</html>")
 
 
 ##Error-Messages:
