@@ -473,7 +473,7 @@ async def ShowStylePic(picID):
 	else:
 		doStyle = (await request.form).get('doStyle','')
 		if doStyle == '1':
-			picID = str(picID)
+			picID = str(picID)[1:]
 			with open(PATH_TO_BASE64_TXT_FOLDER + picID + '.txt', 'r+') as f:
     				d = f.readlines()
     				f.seek(0)
