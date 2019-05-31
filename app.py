@@ -473,6 +473,13 @@ async def ShowStylePic(picID):
 	else:
 		doStyle = (await request.form).get('doStyle','')
 		if doStyle == '1':
+			with open(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', 'r+') as f:
+    				d = f.readlines()
+    				f.seek(0)
+    				for i in d:
+        				if i[0] == 'S':
+            					f.write(i)
+    				f.truncate()
 			prefix = 'O' #Original
 			url_id = str(session['url_id'])
 			ioFile = BytesIO()
