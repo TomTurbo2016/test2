@@ -550,14 +550,14 @@ async def ShowStylePic(picID):
                             "<p style='color:white'>.</p>"
                         "</body>"
                     "</html>")
-			else:
-				if doStyle == '2':
-					url_id = str(session['url_id'])
-					prefix = 'O' #Original
-					img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
-					del url_id
-					del prefix
-					return ("<!DOCTYPE html>"
+		else:
+			if doStyle == '2':
+				url_id = str(session['url_id'])
+				prefix = 'O' #Original
+				img = openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)
+				del url_id
+				del prefix
+				return ("<!DOCTYPE html>"
                             "<html lang='en'>"
                                 "<head>"
                                     "<link rel='shortcut icon' type='image/png' href='static/otherStuff/favicon.ico'/>"
