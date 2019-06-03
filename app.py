@@ -480,7 +480,7 @@ async def ShowStylePic(picID):
     				d = f.readlines()
     				f.seek(0)
     				for i in d:
-        				if i[0] == 'S':
+        				if i[0] == 'O':
             					f.write(i)
     				f.truncate()
 			prefix = 'O' #Original
