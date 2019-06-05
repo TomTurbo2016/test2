@@ -4,7 +4,7 @@
 import os
 import sys
 from pathlib import Path
-from quart import Quart, request, jsonify, session, render_template, redirect, url_for
+from flask import Flask, request, jsonify, session, render_template, redirect, url_for
 from io import BytesIO
 from PIL import Image
 import base64
@@ -12,7 +12,6 @@ import requests
 import stylize2
 import upscale2
 import imageResize2
-import asyncio
 import threading
 import time
 import datetime
@@ -25,7 +24,7 @@ PATH_TO_STYLE_FILES = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
 PATH_TO_SCALE_FILE = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upscaleModel/')
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<
 
-app = Quart(__name__)
+app = Flask(__name__)
 app.secret_key = os.urandom(13)
 
 ####~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~STYLES-FILES~~~~~~~~~~~~~~~~~~~~~~~>
@@ -94,18 +93,18 @@ def thread_function(selectedStyle, ioFile, url_id):
 
 
 @app.route('/', methods=['GET'])
-async def Index():
+def Index():
 	if session.get('url_id') is not None:
 		if os.path.exists(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt'):
 			os.remove(PATH_TO_BASE64_TXT_FOLDER + str(session['url_id']) + '.txt')
-	return await render_template('startPage.html')
+	return render_template('startPage.html')
 
 
 @app.route('/upload', methods=['POST'])
-async def UploadImage():
+def UploadImage():
 	if request.method == "POST":
 		try:
-			data_url = await request.get_data()
+			data_url = request.get_data()
 			data_url = str(data_url.decode('utf-8'))
 			data_url_trimmed = data_url[6:-2]
 			id_url = data_url_trimmed[len(data_url_trimmed)-6:];
@@ -129,7 +128,7 @@ async def UploadImage():
 
 
 @app.route('/showPic', methods=['GET', 'POST'])
-async def ShowPic():
+def ShowPic():
 	if request.method == 'GET':
 		url_id = request.args.get('id')
 		if url_id is not None:
@@ -213,10 +212,10 @@ async def ShowPic():
                         "</body>"
                     "</html>")
 		else:
-			return await render_template('startPage.html')
+			return render_template('startPage.html')
 	else:
 		if request.method == 'POST':
-			doStyle = (await request.form).get('doStyle','')
+			doStyle = (request.form).get('doStyle','')
 			if doStyle == '1':
 				prefix = 'O' #Original
 				url_id = str(session['url_id'])
@@ -379,7 +378,7 @@ async def ShowPic():
 
 
 @app.route('/showStyledPic/<picID>', methods=['GET', 'POST'])
-async def ShowStylePic(picID):
+def ShowStylePic(picID):
 	if request.method == 'GET':
 		picID = str(picID)
 		START_URL_MODIFIED = START_URL + 'showStyledPic/' + picID
@@ -471,11 +470,9 @@ async def ShowStylePic(picID):
 				"}"
 				"</script>")
 	else:
-		doStyle = (await request.form).get('doStyle','')
+		doStyle = (request.form).get('doStyle','')
 		if doStyle == '1':
-			picID = str(picID)[1:]
-			
-			#ToDo --> Check: Error Line 489 --> TypeError: argument should be a bytes-like object or ASCII string, not 'NoneType'
+			picID = str(picID)[1:]		
 			with open(PATH_TO_BASE64_TXT_FOLDER + picID + '.txt', 'r+') as f:
     				d = f.readlines()
     				f.seek(0)
@@ -488,7 +485,7 @@ async def ShowStylePic(picID):
 			ioFile = BytesIO()
 			ioFile.write(base64.b64decode(openBase64StringFromFile(PATH_TO_BASE64_TXT_FOLDER + url_id + '.txt', prefix + url_id)))
 			ioFile.seek(0)
-			selectedStyle = (await request.form)['stylize']
+			selectedStyle = (request.form)['stylize']
 			thread = threading.Thread(target=thread_function, args=(selectedStyle, ioFile, url_id,))
 			thread.deamon = True;
 			thread.start()
@@ -700,4 +697,3 @@ def generalError():
 
 if __name__ == '__main__':
 	app.run()
-	#asyncio.run(main())
