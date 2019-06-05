@@ -6,4 +6,5 @@ uuid
 asyncio
 requests
 opencv-python
-quart
+Flask
+Gunicorn
