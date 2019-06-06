@@ -1,6 +1,10 @@
 #https://github.com/erm/asgi-examples
 #https://github.com/pgjones/quart/blob/master/docs/deployment.rst
+
+##JavaScript:
 # https://stackoverflow.com/questions/16532577/javascript-refresh-countdown-text
+# http://psoug.org/snippet/Javascript-Countdown-to-link-enable_128.htm
+# https://stackoverflow.com/questions/902713/how-do-i-programmatically-click-a-link-with-javascript
 
 import os
 import sys
