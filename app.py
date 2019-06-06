@@ -1,5 +1,6 @@
 #https://github.com/erm/asgi-examples
 #https://github.com/pgjones/quart/blob/master/docs/deployment.rst
+# https://stackoverflow.com/questions/16532577/javascript-refresh-countdown-text
 
 import os
 import sys
